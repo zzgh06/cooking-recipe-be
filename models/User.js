@@ -8,8 +8,7 @@ const userSchema = Schema(
     password: { type: String, required: true },
     id: { type: String, required: true },
     level: { type: String, default: "customer" }, //2types: customer, admin
-    firstName: { type: String },
-    lastName: { type: String },
+    name: { type: String },
     shipTo: { type: Object },
     contact: { type: Object },
     isDeleted: { type: Boolean, default: false },
