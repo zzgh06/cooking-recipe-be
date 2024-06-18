@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-// const indexRouter = require('./routes/index')
+const indexRouter = require('./routes/index');
 const app = express();
 
 require('dotenv').config();
@@ -10,7 +10,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json())
 
-// app.use('/api', indexRouter)
+app.use('/api', indexRouter)
 
 const MONGODB_URI_PROD = process.env.LOCAL_DB_ADDRESS;
 const mongoURI = MONGODB_URI_PROD;
