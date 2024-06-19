@@ -7,7 +7,7 @@ const cartSchema = Schema(
     userId: { type: mongoose.ObjectId, ref: User },
     items: [
       {
-        IngredientId: { type: mongoose.ObjectId, ref: Ingredient },
+        ingredientId: { type: mongoose.ObjectId, ref: Ingredient },
         qty: { type: Number, default: 1 },
       },
     ],

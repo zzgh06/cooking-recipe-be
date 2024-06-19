@@ -5,7 +5,10 @@ const User = require("./User");
 const recipeSchema = Schema(
   {
     ingredients: [
-      { ingredientId: { type: mongoose.ObjectId, ref: Ingredient } },
+      {
+        ingredientId: { type: mongoose.ObjectId, ref: Ingredient },
+        qty: { type: String },
+      },
     ],
     descriptions: [
       {
@@ -14,6 +17,7 @@ const recipeSchema = Schema(
       },
     ],
     category: { type: String },
+    image: { type: String, required: true },
     userId: { type: mongoose.ObjectId, ref: User },
   },
   { timestamps: true }

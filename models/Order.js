@@ -5,8 +5,8 @@ const User = require("./User");
 const Cart = require("./Cart");
 const orderSchema = Schema(
   {
+    userId: { type: mongoose.ObjectId, ref: User },
     contactInfo: {
-      userId: { type: mongoose.ObjectId, ref: User },
       shipTo: { type: Object, required: true },
       contact: { type: Object },
     },
