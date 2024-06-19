@@ -19,6 +19,7 @@ const recipeSchema = Schema(
     category: { type: String },
     image: { type: String, required: true },
     userId: { type: mongoose.ObjectId, ref: User },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
