@@ -28,12 +28,23 @@ frigeController.addIngredient = async(req, res) =>{
     }
 };
 
-//유저의 냉장고 반환
+//유저의 냉장고 재료 반환
 frigeController.getUserFrige = async(req, res) =>{
     try{
         const {userId} = req;
+        const {page, name} = req.query;
+
         const userFrige = await Frige.findOne({userId}).populate('items.ingredientId');
         if(!userFrige) throw new Error("냉장고가 존재하지 않습니다.");
+
+        //쿼리값으로 냉장고 재료 필터
+        if(name){
+            let ingredients = userFrige.items;
+            const regex = new RegExp(name, 'i');
+            ingredients = ingredients.filter((item)=>{
+                return regex.test(item.ingredientId.name);
+            });
+        }
 
         res.status(200).json({status: "success", userFrige});
     }catch(error){
