@@ -6,13 +6,16 @@ const frigeController = {};
 frigeController.addIngredient = async(req, res) =>{
     try{
         const {userId} = req;
-        const userFrige = await Frige.findOne({userId});
-        if(!userFrige) throw new Error("냉장고가 존재하지 않습니다.");
+        let userFrige = await Frige.findOne({userId});
+        //냉장고 없으면 만들기
+        if(!userFrige){
+            userFrige = new Frige({ userId, items: [] });
+        }
 
         const addIngredients = req.body.items; //items:[ {ingfedientId:"id"}, {ingfedientId:"id"}]
         addIngredients.forEach((addIngredient)=>{
             //냉장고에 재료가 이미 있는지 확인
-            const alreadyExists = userFrige.items.find(item => item.ingredientId === addIngredient.ingredientId);
+            const alreadyExists = userFrige.items.find(item => item.ingredientId.toString() === addIngredient.ingredientId.toString());
             if(alreadyExists) throw new Error("냉장고에 재료가 이미 있습니다.");
 
             userFrige.items.push({ ingredientId: addIngredient.ingredientId});
@@ -49,7 +52,7 @@ frigeController.deleteIngredient = async(req, res) =>{
         const deleteIngredients = req.body.items;
         deleteIngredients.forEach(deleteIngredient => {
             userFrige.items = userFrige.items.filter(item => {
-                return item.ingredientId !== deleteIngredient.ingredientId
+                return item.ingredientId.toString() !== deleteIngredient.ingredientId.toString();
             });
         });
         await userFrige.save();
