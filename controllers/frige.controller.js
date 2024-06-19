@@ -44,6 +44,7 @@ frigeController.getUserFrige = async(req, res) =>{
             ingredients = ingredients.filter((item)=>{
                 return regex.test(item.ingredientId.name);
             });
+            return res.status(200).json({status: "success", ingredients});
         }
 
         res.status(200).json({status: "success", userFrige});
