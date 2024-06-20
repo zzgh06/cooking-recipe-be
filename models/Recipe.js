@@ -4,6 +4,7 @@ const Ingredient = require("./Ingredient");
 const User = require("./User");
 const recipeSchema = Schema(
   {
+    name: { type: String, required: true },
     ingredients: [
       {
         ingredientId: { type: mongoose.ObjectId, ref: Ingredient },

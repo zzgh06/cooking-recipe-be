@@ -14,7 +14,7 @@ const ingredientSchema = Schema(
   },
   { timestamps: true }
 );
-frigeSchema.methods.toJSON = function () {
+ingredientSchema.methods.toJSON = function () {
   const obj = this._doc;
   delete obj.updatedAt;
   delete obj.createAt;
