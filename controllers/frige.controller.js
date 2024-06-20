@@ -22,32 +22,45 @@ frigeController.addIngredient = async(req, res) =>{
         });
         await userFrige.save();
 
-        res.status(200).json({status: "success", userFrige});
+        res.status(200).json({status: "success", userFrige: userFrige.items});
     }catch(error){
         res.status(400).json({status: "fail", error: error.message});
     }
 };
 
 //유저의 냉장고 재료 반환
+PAGE_SIZE = 5;
 frigeController.getUserFrige = async(req, res) =>{
     try{
         const {userId} = req;
-        const {page, name} = req.query;
+        const {page=1, name} = req.query;
+        let query = {};
+        let totalItems = 0;
 
-        const userFrige = await Frige.findOne({userId}).populate('items.ingredientId');
+        // 냉장고 조회
+        let userFrige = await Frige.findOne({userId}).populate('items.ingredientId');
         if(!userFrige) throw new Error("냉장고가 존재하지 않습니다.");
 
-        //쿼리값으로 냉장고 재료 필터
-        if(name){
-            let ingredients = userFrige.items;
+        // 총 재료 수
+        totalItems = userFrige.items.length;
+
+        // 이름으로 필터링된 경우 해당 필터링 적용
+        if (name) {
             const regex = new RegExp(name, 'i');
-            ingredients = ingredients.filter((item)=>{
-                return regex.test(item.ingredientId.name);
-            });
-            return res.status(200).json({status: "success", ingredients});
+            userFrige.items = userFrige.items.filter((ingredient) => regex.test(ingredient.ingredientId.name));
+            totalItems = userFrige.items.length;
         }
 
-        res.status(200).json({status: "success", userFrige});
+        // 페이징 처리
+        userFrige.items = userFrige.items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+        res.status(200).json({
+            data: {
+                status: "success",
+                userFrige: userFrige.items,
+                totalPageNum: Math.ceil(totalItems / PAGE_SIZE),
+            }
+        });
     }catch(error){
         res.status(400).json({status: "fail", error: error.message});
     }
@@ -69,7 +82,7 @@ frigeController.deleteIngredient = async(req, res) =>{
         });
         await userFrige.save();
 
-        res.status(200).json({status: "success", userFrige});
+        res.status(200).json({status: "success", userFrige: userFrige.items});
     }catch(error){
         res.status(400).json({status: "fail", error: error.message});
     }
