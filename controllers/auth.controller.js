@@ -68,6 +68,7 @@ authController.loginWithGoogle = async (req, res) => {
         name,
         email,
         password: newPassword,
+        id: email,
       });
       await user.save();
     }

@@ -6,7 +6,7 @@ const Ingredient = require("./Ingredient");
 const frigeSchema = Schema(
   {
     userId: { type: mongoose.ObjectId, ref: User },
-    items: [{ingredientId: { type: mongoose.ObjectId, ref: Ingredient } }],
+    items: [{ ingredientId: { type: mongoose.ObjectId, ref: Ingredient } }],
   },
   { timestamps: true }
 );
@@ -20,4 +20,3 @@ frigeSchema.methods.toJSON = function () {
 
 const Frige = mongoose.model("Frige", frigeSchema);
 module.exports = Frige;
-

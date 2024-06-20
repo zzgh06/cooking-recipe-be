@@ -4,8 +4,12 @@ const Ingredient = require("./Ingredient");
 const User = require("./User");
 const recipeSchema = Schema(
   {
+    name: { type: String, required: true },
     ingredients: [
-      { ingredientId: { type: mongoose.ObjectId, ref: Ingredient } },
+      {
+        ingredientId: { type: mongoose.ObjectId, ref: Ingredient },
+        qty: { type: String },
+      },
     ],
     descriptions: [
       {
@@ -14,7 +18,9 @@ const recipeSchema = Schema(
       },
     ],
     category: { type: String },
+    image: { type: String, required: true },
     userId: { type: mongoose.ObjectId, ref: User },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
