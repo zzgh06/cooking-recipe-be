@@ -23,4 +23,5 @@ ingredientSchema.methods.toJSON = function () {
 };
 
 const Ingredient = mongoose.model("Ingredient", ingredientSchema);
+
 module.exports = Ingredient;
