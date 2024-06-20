@@ -8,16 +8,17 @@ ingredientController.getIngredients = async (req, res) => {
     try{
         const {page=1, name} = req.query;
         const query = {isDeleted: false};
-        let ingredients = await Ingredient.find(query)
-            .skip((page-1) * PAGE_SIZE)
-            .limit(PAGE_SIZE);
+
+        if (name) {
+            const regex = new RegExp(name, 'i');
+            query.name = regex;
+        }
 
         const totalItems = await Ingredient.find(query).count();
 
-        if(name){
-            const regex = new RegExp(name, 'i');
-            ingredients = ingredients.filter((ingredient) => regex.test(ingredient.name)); 
-        };
+        const ingredients = await Ingredient.find(query)
+            .skip((page - 1) * PAGE_SIZE)
+            .limit(PAGE_SIZE);
 
         res.status(200).json({
             data:{
