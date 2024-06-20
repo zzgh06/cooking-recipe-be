@@ -14,6 +14,7 @@ app.use(express.json());
 app.use("/api", indexRouter);
 
 //const mongoURI_PROD = process.env.MONGODB_URI_PROD;
+//const mongoURI = mongoURI_PROD;
 const mongoURI_LOCAL = process.env.MONGODB_URI_LOCAL;
 const mongoURI = mongoURI_LOCAL;
 
