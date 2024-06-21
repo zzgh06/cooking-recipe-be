@@ -10,14 +10,14 @@ router.get("/", recipeController.getRecipes); //test
 router.put(
   "/:id",
   authController.authenticate,
-  recipeController.checkUpdatePermission,
+  authController.checkRecipeUpdatePermission,
   recipeController.editRecipe
 ); //test
 
 router.delete(
   "/:id",
   authController.authenticate,
-  recipeController.checkUpdatePermission,
+  authController.checkRecipeUpdatePermission,
   recipeController.deleteRecipe
 ); //test
 router.get("/:id", recipeController.getRecipeById); //test

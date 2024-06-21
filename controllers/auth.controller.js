@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Recipe = require("../models/Recipe");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
@@ -78,6 +79,34 @@ authController.loginWithGoogle = async (req, res) => {
     //토큰값을 읽어와서 => 유저정보를 뽑아내고 email
     //a. 이미 로그인을 한적이 있는 유저 => 로그인시키고 토큰값 주며됨
     //b. 처음 로그인을 시도를 한 유저다 => 유저정보 먼저 새로 생성 => 토큰값
+  } catch (error) {
+    return res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+authController.checkRecipeUpdatePermission = async (req, res, next) => {
+  try {
+    const recipeId = req.params.id;
+    const recipe = await Recipe.findById(recipeId);
+    const { userId } = req;
+    const user = await User.findById(userId);
+
+    if (!user._id.equals(recipe.userId) && user.level !== "admin")
+      throw Error("no recipe update permission");
+    next();
+  } catch (error) {
+    return res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+authController.checkUserUpdatePermission = async (req, res, next) => {
+  try {
+    const { userId } = req; //token 로그인에서 얻어낸 아이디
+    const user = await User.findById(userId);
+    const userIdFromParams = req.params.id; //수정할려는 유저정보 아이디
+    if (!userId.equals(userIdFromParams) && user.level !== "admin")
+      throw Error("no user update permission");
+    next();
   } catch (error) {
     return res.status(400).json({ status: "fail", error: error.message });
   }

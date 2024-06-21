@@ -85,18 +85,18 @@ recipeController.getRecipeById = async (req, res) => {
   }
 };
 //글 작성자 이거나 admin이면 update 허용
-recipeController.checkUpdatePermission = async (req, res, next) => {
-  try {
-    const recipeId = req.params.id;
-    const recipe = await Recipe.findById(recipeId);
-    const { userId } = req;
-    const user = await User.findById(userId);
+// recipeController.checkUpdatePermission = async (req, res, next) => {
+//   try {
+//     const recipeId = req.params.id;
+//     const recipe = await Recipe.findById(recipeId);
+//     const { userId } = req;
+//     const user = await User.findById(userId);
 
-    if (!user._id.equals(recipe.userId) && user.level !== "admin")
-      throw Error("no update permission");
-    next();
-  } catch (error) {
-    return res.status(400).json({ status: "fail", error: error.message });
-  }
-};
+//     if (!user._id.equals(recipe.userId) && user.level !== "admin")
+//       throw Error("no update permission");
+//     next();
+//   } catch (error) {
+//     return res.status(400).json({ status: "fail", error: error.message });
+//   }
+// };
 module.exports = recipeController;
