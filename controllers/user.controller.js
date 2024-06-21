@@ -40,7 +40,7 @@ userController.createUser = async (req, res) => {
 userController.getUser = async (req, res) => {
   try {
     const { userId } = req;
-    const user = await User.findById(userId);
+    const user = await User.findOne({ _id: userId, isDeleted: false });
     if (user) {
       return res.status(200).json({ status: "success", user });
     }
@@ -51,12 +51,57 @@ userController.getUser = async (req, res) => {
 };
 //모든 user 정보 리턴
 userController.getUsers = async (req, res) => {
-  try{
-    const users = await User.find();
-    res.status(200).json({status: "success", users});
-  }catch(error){
-    res.status(400).json({ status: "error", message: error.message });
+  try {
+    const { page, name } = req.query;
+    const cond = name
+      ? { name: { $regex: name, $options: "i" }, isDeleted: false }
+      : { isDeleted: false };
+    let query = User.find(cond);
+    let response = { status: "success" };
+    if (page) {
+      query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
+      const totalItemNum = await User.find(cond).count();
+      const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
+      response.totalPageNum = totalPageNum;
+    }
+    const userList = await query.exec();
+    response.data = userList;
+    console.log(1);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
   }
-}
+};
+userController.updateUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { email, password, id, name, shipTo, contact } = req.body;
+    const currentUser = await User.findById(userId);
+    if (!currentUser) throw new Error("User not found");
+    const updatedShipTo = shipTo !== undefined ? shipTo : currentUser.shipTo;
+    const user = await User.findByIdAndUpdate(
+      { _id: userId },
+      { email, password, id, name, shipTo: updatedShipTo, contact },
+      { new: true }
+    );
+    if (!user) throw new Error("recipe doesn't exist");
+    res.status(200).json({ status: "success", data: user });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
 
+userController.deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findByIdAndUpdate(
+      { _id: userId },
+      { isDeleted: true }
+    );
+    if (!user) throw new Error("User not found");
+    res.status(200).json({ state: "success" });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
 module.exports = userController;
