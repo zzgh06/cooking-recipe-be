@@ -50,7 +50,7 @@ userController.getUser = async (req, res) => {
   }
 };
 //모든 user 정보 리턴
-userController.getUsers = async (res, req) => {
+userController.getUsers = async (req, res) => {
   try {
     const { page, name } = req.query;
     const cond = name
@@ -66,6 +66,7 @@ userController.getUsers = async (res, req) => {
     }
     const userList = await query.exec();
     response.data = userList;
+    console.log(1);
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });

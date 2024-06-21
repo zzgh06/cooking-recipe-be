@@ -104,7 +104,7 @@ authController.checkUserUpdatePermission = async (req, res, next) => {
     const { userId } = req; //token 로그인에서 얻어낸 아이디
     const user = await User.findById(userId);
     const userIdFromParams = req.params.id; //수정할려는 유저정보 아이디
-    if (!userId.equals(userIdFromParams) && user.level !== "admin")
+    if (!(userId === userIdFromParams) && user.level !== "admin")
       throw Error("no user update permission");
     next();
   } catch (error) {
