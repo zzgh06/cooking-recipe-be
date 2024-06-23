@@ -3,7 +3,6 @@ const ingredientController = require("../controllers/ingredient.controller");
 const authController = require("../controllers/auth.controller");
 const router = express.Router();
 
-router.get("/category", ingredientController.getCategory);
 router.get("/:id", ingredientController.getIngredient);
 router.get("/", ingredientController.getIngredients);
 

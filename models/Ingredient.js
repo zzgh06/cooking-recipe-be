@@ -3,12 +3,14 @@ const Schema = mongoose.Schema;
 
 const ingredientSchema = Schema(
   {
-    name: { type: String },
-    description: { type: String },
+    name: { type: String, required: true },
+    description: { type: String, required: true },
     image: { type: String, required: true },
-    price: { type: Number },
-    category: { type: String, default: "기타" },
+    price: { type: Number, required: true },
+    discountPrice: {type: Number },
+    category: { type: Array, required: true },
     stock: { type: Number, required: true },
+    unit: { type: String },
     status: { type: String, default: "active" },
     isDeleted: { type: Boolean, default: false },
   },
