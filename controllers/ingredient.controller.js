@@ -5,13 +5,17 @@ const ingredientController = {};
 //삭제되지 않은 모든 재료를 리턴
 const PAGE_SIZE = 5;
 ingredientController.getIngredients = async (req, res) => {
+    //"채소", "과일", "육류", "해산물", "유제품 및 달걀", "곡류 및 빵", "조미료 및 소스", "냉장 및 냉동식품", "기타"
     try{
-        const {page=1, name} = req.query;
+        const {page=1, name, category} = req.query;
         const query = {isDeleted: false};
 
-        if (name) {
-            const regex = new RegExp(name, 'i');
-            query.name = regex;
+        if(name){            
+            query.name = new RegExp(name, 'i');
+        }
+
+        if(category){
+            query.category = new RegExp(category, 'i');
         }
 
         const totalItems = await Ingredient.find(query).count();
@@ -21,8 +25,8 @@ ingredientController.getIngredients = async (req, res) => {
             .limit(PAGE_SIZE);
 
         res.status(200).json({
+            status:"success",
             data:{
-                status:"success", 
                 ingredients,
                 totalPageNum: Math.ceil(totalItems / PAGE_SIZE)
             }
@@ -37,6 +41,7 @@ ingredientController.getIngredient = async (req, res) =>{
     try{
         const ingredientId = req.params.id;
         const ingredient = await Ingredient.findById(ingredientId);
+        if(!ingredient) throw new Error("해당 재료를 찾을 수 없습니다.");
 
         res.status(200).json({status:"success", ingredient});
     }catch(error){
@@ -52,13 +57,15 @@ ingredientController.createIngredient = async (req, res) => {
             description,
             image,
             price,
+            discountPrice,
             category,
             stock,
+            unit,
             status="active",
             isDeleted=false
         } = req.body;
 
-        const ingredient = new Ingredient({name,description,image,price,category,stock,status,isDeleted});
+        const ingredient = new Ingredient({name,description,image,price,discountPrice,category,stock,unit,status,isDeleted});
         await ingredient.save();
         res.status(200).json({status:"success", ingredient});
     }catch(error){
@@ -75,15 +82,17 @@ ingredientController.updateIngredient = async (req, res) => {
             description,
             image,
             price,
+            discountPrice,
             category,
             stock,
+            unit,
             status,
             isDeleted
         } = req.body;
 
         const ingredient = await Ingredient.findByIdAndUpdate(
             ingredientId,
-            {name,description,image,price,category,stock,status,isDeleted},
+            {name,description,image,price,discountPrice,category,stock,unit,status,isDeleted},
             {new: true}
         );
         res.status(200).json({status:"success", ingredient});
