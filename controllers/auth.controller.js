@@ -3,6 +3,7 @@ const Recipe = require("../models/Recipe");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
+const RecipeReview = require("../models/RecipeReview");
 require("dotenv").config();
 const authController = {};
 
@@ -106,6 +107,20 @@ authController.checkUserUpdatePermission = async (req, res, next) => {
     const userIdFromParams = req.params.id; //수정할려는 유저정보 아이디
     if (!(userId === userIdFromParams) && user.level !== "admin")
       throw Error("no user update permission");
+    next();
+  } catch (error) {
+    return res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+authController.checkRecipeReviewUpdatePermission = async (req, res, next) => {
+  try {
+    const { userId } = req;
+    const user = await User.findOne({ _id: userId, isDeleted: false });
+    const reviewId = req.params.id;
+    const review = RecipeReview.findById(reviewId);
+    if (!user._id.equals(review.userId_obj) && user.level !== "admin")
+      throw Error("no review update permission");
     next();
   } catch (error) {
     return res.status(400).json({ status: "fail", error: error.message });

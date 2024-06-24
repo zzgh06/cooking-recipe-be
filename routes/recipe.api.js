@@ -6,7 +6,7 @@ const recipeController = require("../controllers/recipe.controller");
 //recipe
 
 router.post("/", authController.authenticate, recipeController.createRecipe); //test
-router.get("/", recipeController.getRecipes); //test
+router.get("/", recipeController.getRecipes); //레시피 검색용//test
 router.put(
   "/:id",
   authController.authenticate,
@@ -20,6 +20,7 @@ router.delete(
   authController.checkRecipeUpdatePermission,
   recipeController.deleteRecipe
 ); //test
+router.get("/category", recipeController.getRecipesByCategory); //test
+router.get("/frige", recipeController.getFrigeRecipes); //냉장고 재료 기반 검색용 //test
 router.get("/:id", recipeController.getRecipeById); //test
-
 module.exports = router;
