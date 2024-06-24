@@ -13,11 +13,11 @@ router.delete(
   authController.authenticate,
   authController.checkRecipeReviewUpdatePermission,
   recipeReviewController.deleteReview
-);
+); //test
 router.put(
   "/:id",
   authController.authenticate,
   authController.checkRecipeReviewUpdatePermission,
   recipeReviewController.updateReview
-);
+); //test
 module.exports = router;
