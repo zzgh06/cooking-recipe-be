@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Product = require("./Ingredient");
+const Ingredient = require("./Ingredient");
 const User = require("./User");
 const Cart = require("./Cart");
 const orderSchema = Schema(

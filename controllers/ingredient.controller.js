@@ -116,4 +116,33 @@ ingredientController.deleteIngredient = async (req, res) => {
     }
 }
 
+//재고 하나 체크
+ingredientController.checkStock = async(item) =>{
+    const ingredient = await Ingredient.findById(item.ingredientId);
+    if(ingredient.stock < item.qty){
+        return {isVerify:false, message:`${ingredient.name}의 재고가 부족합니다.`}
+    }
+
+    ingredient.stock -= item.qty;
+    await ingredient.save();
+
+    return {isVerify:true}
+}
+
+//재고 전부 체크
+ingredientController.checkItemListStock = async (items) =>{
+    const insufficientStockItems = [];
+    await Promise.all(
+        items.map(async(item)=>{
+            const stockCheck = await ingredientController.checkStock(item);
+            if(!stockCheck.isVerify){
+                insufficientStockItems.push({items, message:stockCheck.message});
+            }
+            return stockCheck;
+        })
+    );
+    
+    return insufficientStockItems;
+}
+
 module.exports = ingredientController;
