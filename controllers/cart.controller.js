@@ -5,12 +5,13 @@ const cartController = {};
 
 cartController.getCart = async (req, res) =>{
     try{
-        const userId = req;
+        const {userId} = req;
+        console.log(userId);
         const cart = await Cart.findOne({userId}).populate({ 
             path: 'items.ingredientId'
         });
 
-        res.status(200).json({status: "success", error:error.message});
+        res.status(200).json({status: "success", data: cart});
     }catch(error){
         res.status(400).json({status:"fail", error:error.message});
     }
@@ -18,7 +19,7 @@ cartController.getCart = async (req, res) =>{
 
 cartController.addItemToCart = async (req, res) =>{
     try{
-        const userId = req;
+        const {userId} = req;
         const {ingredientId, qty} = req.body;
 
         let cart = await Cart.findOne({userId});
@@ -52,7 +53,7 @@ cartController.updateCartItem = async (req, res) =>{
         });
         if (!cart) throw new Error("카트가 존재하지 않습니다.");
 
-        const index = cart.items.findIndex((item) => item._id.equals(id));
+        const index = cart.items.findIndex((item) => item.ingredientId.equals(id));
         if (index === -1) throw new Error("카트에서 상품을 찾을 수 없습니다.");
 
         cart.items[index].qty = qty;
@@ -70,7 +71,7 @@ cartController.deleteCartItem = async (req, res) =>{
         const {id} = req.params;
         const cart = await Cart.findOne({userId});
 
-        cart.items = cart.items.filter((item) => !item._id.equals(id));
+        cart.items = cart.items.filter((item) => !item.ingredientId.equals(id));
         await cart.save();
 
         res.status(200).json({status:"success", data: cart.items});
