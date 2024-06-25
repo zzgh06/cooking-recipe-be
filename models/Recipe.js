@@ -28,7 +28,7 @@ const recipeSchema = Schema(
       etc: { type: String }, //위 카테고리 이외의 카테고리
     },
 
-    images: [{ image: { type: String, required: true } }],
+    images: [{ type: String, required: true }],
     userId: { type: mongoose.ObjectId, ref: User },
     time: { type: String, required: true },
     servings: { type: Number, required: true },
