@@ -7,16 +7,17 @@ const PAGE_SIZE = 5;
 orderController.createOrder = async(req, res) =>{
     try{
         const {userId} = req;
-        const {contactInfo, totalPrice, status, orderNum, items} = req.body;
+        const {contactInfo, totalPrice, status, items} = req.body;
 
-        const insufficientStockItems = await ingredientController.checkItemListStock(item);
+        const insufficientStockItems = await ingredientController.checkItemListStock(items);
 
         if(insufficientStockItems.length>0){
-            const errorMessage = insufficientStockItems.reduce(
-                (total, item)=> (total += item.message),
-                ""
-            );
-            throw new Error(errorMessage);
+            let ingredient = "";
+            insufficientStockItems.forEach((item, index)=>{
+                ingredient += item.message;
+                if(index !== insufficientStockItems.length-1) ingredient += ", ";
+            });
+            throw new Error(ingredient + "의 재고가 부족합니다.");
         }
 
         const newOrder = new Order({
@@ -24,7 +25,6 @@ orderController.createOrder = async(req, res) =>{
             contactInfo,
             totalPrice,
             status,
-            orderNum,
             items,
             orderNum: randomStringGenerator()
         });
@@ -63,10 +63,10 @@ orderController.getOrder = async(req, res) =>{
 
 orderController.getOrderList = async(req, res) =>{
     try{
-        const {page=1, ordernum} = req.query;
+        const {page=1, orderNum} = req.query;
         let query = {};
 
-        if(ordernum){
+        if(orderNum){
             query.orderNum = new RegExp(orderNum, 'i');
         }
 

@@ -6,7 +6,6 @@ const cartController = {};
 cartController.getCart = async (req, res) =>{
     try{
         const {userId} = req;
-        console.log(userId);
         const cart = await Cart.findOne({userId}).populate({ 
             path: 'items.ingredientId'
         });
