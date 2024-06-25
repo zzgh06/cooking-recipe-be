@@ -5,14 +5,28 @@ const recipeController = {};
 recipeController.createRecipe = async (req, res) => {
   try {
     const { userId } = req;
-    const { name, ingredients, descriptions, categories, images } = req.body;
+    const {
+      name,
+      description,
+      ingredients,
+      steps,
+      categories,
+      images,
+      time,
+      servings,
+      difficulty,
+    } = req.body;
     const recipe = new Recipe({
       name,
+      description,
       ingredients,
-      descriptions,
+      steps,
       categories,
       images,
       userId,
+      time,
+      servings,
+      difficulty,
     });
     await recipe.save();
     res.status(200).json({ status: "success", recipe });
@@ -93,10 +107,30 @@ recipeController.getRecipes = async (req, res) => {
 recipeController.editRecipe = async (req, res) => {
   try {
     const recipeId = req.params.id;
-    const { name, descriptions, categories, images } = req.body;
+    const {
+      name,
+      description,
+      ingredients,
+      steps,
+      categories,
+      images,
+      time,
+      servings,
+      difficulty,
+    } = req.body;
     const recipe = await Recipe.findByIdAndUpdate(
       { _id: recipeId },
-      { name, descriptions, categories, images },
+      {
+        name,
+        description,
+        ingredients,
+        steps,
+        categories,
+        images,
+        time,
+        servings,
+        difficulty,
+      },
       { new: true } //업데이트 된 문서 반환
     );
     if (!recipe) throw new Error("recipe doesn't exist");
@@ -163,32 +197,26 @@ recipeController.getFrigeRecipes = async (req, res) => {
 };
 recipeController.getRecipesByCategory = async (req, res) => {
   try {
-    const {
-      foodCategory,
-      moodCategory,
-      methodCategory,
-      ingredientCategory,
-      etcCategory,
-    } = req.query;
+    const { food, mood, method, ingredient, etc } = req.query;
     let query = {};
-    if (foodCategory) query["categories.foodCategory"] = foodCategory;
-    if (moodCategory) query["categories.moodCategory"] = moodCategory;
-    if (methodCategory) query["categories.methodCategory"] = methodCategory;
-    if (ingredientCategory)
-      query["categories.ingredientCategory"] = ingredientCategory;
+    if (food) query["categories.food"] = food;
+    if (mood) query["categories.mood"] = mood;
+    if (method) query["categories.method"] = method;
+    if (ingredient) query["categories.ingredient"] = ingredient;
+    if (etc) query["categories.etc"] = etc;
     let recipeList = await Recipe.find(query);
-    if (etcCategory) {
-      const etcCategoryArray = etcCategory.split(" "); //검색 카테고리
-      const filteredRecipes = recipeList.filter((recipe) => {
-        const etcArray = recipe.categories.etcCategory; //레시피
-        //etcArray에 etcCategoryArray가 다 포함되어있을 경우 반환
-        return (
-          etcArray &&
-          etcCategoryArray.every((category) => etcArray.includes(category))
-        );
-      });
-      recipeList = filteredRecipes;
-    }
+    // if (etc) {
+    //   const etcCategoryArray = etc.split(" "); //검색 카테고리
+    //   const filteredRecipes = recipeList.filter((recipe) => {
+    //     const etcArray = recipe.categories.etc; //레시피
+    //     //etcArray에 etcCategoryArray가 다 포함되어있을 경우 반환
+    //     return (
+    //       etcArray &&
+    //       etcCategoryArray.every((category) => etcArray.includes(category))
+    //     );
+    //   });
+    //   recipeList = filteredRecipes;
+    // }
 
     res.status(200).json({ status: "success", recipeList: recipeList });
   } catch (error) {
