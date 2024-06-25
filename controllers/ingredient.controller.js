@@ -120,7 +120,7 @@ ingredientController.deleteIngredient = async (req, res) => {
 ingredientController.checkStock = async(item) =>{
     const ingredient = await Ingredient.findById(item.ingredientId);
     if(ingredient.stock < item.qty){
-        return {isVerify:false, message:`${ingredient.name}의 재고가 부족합니다.`}
+        return {isVerify:false, message:ingredient.name}
     }
 
     ingredient.stock -= item.qty;

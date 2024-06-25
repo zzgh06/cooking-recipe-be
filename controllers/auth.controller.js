@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
 const RecipeReview = require("../models/RecipeReview");
+const IngredientReview = require("../models/IngredientReview");
 require("dotenv").config();
 const authController = {};
 
@@ -119,7 +120,25 @@ authController.checkRecipeReviewUpdatePermission = async (req, res, next) => {
     const user = await User.findOne({ _id: userId, isDeleted: false });
     const reviewId = req.params.id;
     const review = RecipeReview.findById(reviewId);
-    if (!user._id.equals(review.userId_obj) && user.level !== "admin")
+    if (!(userId === review.userId) && user.level !== "admin")
+      throw Error("no review update permission");
+    next();
+  } catch (error) {
+    return res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+authController.checkIngredientReviewUpdatePermission = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const { userId } = req;
+    const user = await User.findOne({ _id: userId, isDeleted: false });
+    const reviewId = req.params.id;
+    const review = IngredientReview.findById(reviewId);
+    if (!(userId === review.userId) && user.level !== "admin")
       throw Error("no review update permission");
     next();
   } catch (error) {
