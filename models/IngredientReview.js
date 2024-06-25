@@ -1,18 +1,18 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Recipe = require("./Recipe");
+const Ingredient = require("./Ingredient");
 const User = require("./User");
-const recipeReviewSchema = Schema(
+const ingredientReviewSchema = Schema(
   {
-    recipeId: { type: mongoose.ObjectId, ref: Recipe, required: true },
+    ingredientId: { type: mongoose.ObjectId, ref: Ingredient, required: true },
     userId: { type: mongoose.ObjectId, ref: User, required: true },
     comment: { type: String, required: true },
     rating: { type: Number },
   },
   { timestamps: true }
 );
-recipeReviewSchema.methods.toJSON = function () {
+ingredientReviewSchema.methods.toJSON = function () {
   const obj = this._doc;
   delete obj.updatedAt;
   delete obj.createAt;
@@ -20,5 +20,8 @@ recipeReviewSchema.methods.toJSON = function () {
   return obj;
 };
 
-const RecipeReview = mongoose.model("RecipeReview", recipeReviewSchema);
-module.exports = RecipeReview;
+const IngredientReview = mongoose.model(
+  "IngredientReview",
+  ingredientReviewSchema
+);
+module.exports = IngredientReview;
