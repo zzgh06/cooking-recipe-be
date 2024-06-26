@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.post("/", authController.authenticate, frigeController.addIngredient);
 router.get("/", authController.authenticate, frigeController.getUserFrige);
-router.delete("/", authController.authenticate, frigeController.deleteIngredient);
+router.delete("/:id", authController.authenticate, frigeController.deleteIngredient);
 
 module.exports = router;

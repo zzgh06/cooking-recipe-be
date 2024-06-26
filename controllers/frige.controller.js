@@ -22,6 +22,7 @@ frigeController.addIngredient = async(req, res) =>{
         });
         await userFrige.save();
 
+        await userFrige.populate('items.ingredientId');
         res.status(200).json({status: "success", userFrige: userFrige.items});
     }catch(error){
         res.status(400).json({status: "fail", error: error.message});
@@ -29,7 +30,7 @@ frigeController.addIngredient = async(req, res) =>{
 };
 
 //유저의 냉장고 재료 반환
-PAGE_SIZE = 5;
+PAGE_SIZE = 12;
 frigeController.getUserFrige = async(req, res) =>{
     try{
         const {userId} = req;
@@ -70,16 +71,12 @@ frigeController.getUserFrige = async(req, res) =>{
 frigeController.deleteIngredient = async(req, res) =>{
     try{
         const {userId} = req;
+        const {id} = req.params;
         const userFrige = await Frige.findOne({userId});
         if(!userFrige) throw new Error("냉장고가 존재하지 않습니다.");
 
         //유저냉장고.item = 유저냉장고.item - 삭제할 재료
-        const deleteIngredients = req.body.items;
-        deleteIngredients.forEach(deleteIngredient => {
-            userFrige.items = userFrige.items.filter(item => {
-                return item.ingredientId.toString() !== deleteIngredient.ingredientId.toString();
-            });
-        });
+        userFrige.items = userFrige.items.filter(item => item._id.toString() !== id.toString());
         await userFrige.save();
 
         res.status(200).json({status: "success", userFrige: userFrige.items});
