@@ -7,11 +7,12 @@ const ingredientSchema = Schema(
     description: { type: String, required: true },
     image: { type: String, required: true },
     price: { type: Number, required: true },
-    discountPrice: {type: Number },
+    discountPrice: { type: Number },
     category: { type: Array, required: true },
     stock: { type: Number, required: true },
     unit: { type: String },
     status: { type: String, default: "active" },
+    reviewCnt: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }

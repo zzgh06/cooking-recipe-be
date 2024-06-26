@@ -88,7 +88,8 @@ recipeController.getRecipes = async (req, res) => {
       ? { name: { $regex: name, $options: "i" }, isDeleted: false }
       : { isDeleted: false };
     let query = Recipe.find(cond);
-
+    const sortField = "reviewCnt";
+    query = query.sort({ [sortField]: -1 });
     let response = { status: "success" };
     if (page) {
       query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
@@ -222,5 +223,14 @@ recipeController.getRecipesByCategory = async (req, res) => {
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
+};
+
+recipeController.updateReviewCnt = async (recipeId, num) => {
+  const recipe = await Recipe.findById(recipeId);
+  console.log(recipeId);
+  if (!recipe) throw new Error("update reviewCnt error");
+  if (typeof recipe.reviewCnt !== "number") recipe.reviewCnt = 0;
+  recipe.reviewCnt += num;
+  await recipe.save();
 };
 module.exports = recipeController;

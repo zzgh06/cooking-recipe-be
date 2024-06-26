@@ -1,6 +1,8 @@
+const ingredientController = require("./ingredient.controller");
 const ingredientReviewController = {};
 const IngredientReview = require("../models/IngredientReview");
 const User = require("../models/User");
+const Ingredient = require("../models/Ingredient");
 ingredientReviewController.createReview = async (req, res) => {
   try {
     let { userId } = req;
@@ -13,6 +15,7 @@ ingredientReviewController.createReview = async (req, res) => {
       rating,
     });
     await newIngredientReview.save();
+    await ingredientController.updateReviewCnt(ingredientId, 1);
     res.status(200).json({ status: "success", data: newIngredientReview });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
@@ -38,9 +41,13 @@ ingredientReviewController.getReviews = async (req, res) => {
 ingredientReviewController.deleteReview = async (req, res) => {
   try {
     const ingredientReviewId = req.params.id;
+    const _review = await IngredientReview.findById(ingredientReviewId);
+    console.log(_review);
+
     const review = await IngredientReview.deleteOne({
       _id: ingredientReviewId,
     });
+    await ingredientController.updateReviewCnt(_review.ingredientId, -1);
 
     res
       .status(200)
