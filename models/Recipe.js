@@ -5,7 +5,7 @@ const User = require("./User");
 const recipeSchema = Schema(
   {
     name: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String },
     ingredients: [
       {
         ingredientId: { type: mongoose.ObjectId, ref: Ingredient },
@@ -16,7 +16,7 @@ const recipeSchema = Schema(
     ],
     steps: [
       {
-        description: { type: String, required: true },
+        description: { type: String },
         image: { type: String },
       },
     ],
@@ -28,12 +28,13 @@ const recipeSchema = Schema(
       etc: { type: String }, //위 카테고리 이외의 카테고리
     },
 
-    images: [{ type: String, required: true }],
+    images: [{ type: String }],
     userId: { type: mongoose.ObjectId, ref: User },
-    time: { type: String, required: true },
-    servings: { type: Number, required: true },
-    difficulty: { type: String, required: true },
+    time: { type: String },
+    servings: { type: Number },
+    difficulty: { type: String },
     isDeleted: { type: Boolean, default: false },
+    reviewCnt: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
