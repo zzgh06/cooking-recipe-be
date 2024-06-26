@@ -8,7 +8,6 @@ ingredientController.getIngredients = async (req, res) => {
   //"채소", "과일", "육류", "해산물", "유제품 및 달걀", "곡류 및 빵", "조미료 및 소스", "냉장 및 냉동식품", "기타"
   try {
     const { page, name, category } = req.query;
-
     const query = { isDeleted: false };
 
     if (name) {
@@ -173,6 +172,15 @@ ingredientController.checkItemListStock = async (items) => {
   );
 
   return insufficientStockItems;
+};
+
+ingredientController.updateReviewCnt = async (ingredientId, num) => {
+  const ingredient = await Ingredient.findById(ingredientId);
+
+  if (!ingredient) throw new Error("update reviewCnt error");
+  if (typeof ingredient.reviewCnt !== "number") recipe.reviewCnt = 0;
+  ingredient.reviewCnt += num;
+  await ingredient.save();
 };
 
 module.exports = ingredientController;
