@@ -168,34 +168,30 @@ recipeController.getRecipeById = async (req, res) => {
 
 recipeController.getFrigeRecipes = async (req, res) => {
   try {
-    const { ingredient } = req.query;
+    const { name } = req.query;
     let response = { status: "success" };
-    if (ingredient) {
-      const ingredientNames = ingredient.split(" "); //냉장고에 있는 재료
 
-      //모든 레시피 조회
-      const recipes = await Recipe.find();
-      //각 레시피를 검사하여 포함된 재료 갯수를 셈
-      const filteredRecipes = recipes.filter((recipe) => {
-        const recipeIngredientNames = recipe.ingredients.map((ing) => ing.name); //레시피에 필요한 재료
-        const matchingIngredientsCount = ingredientNames.filter((name) =>
-          recipeIngredientNames.includes(name)
-        ).length; //냉장고에 있는 재료 중에 레시피에 쓰이는 재료 갯수
-        return (
-          matchingIngredientsCount >= Math.ceil(ingredientNames.length / 2)
-        ); //냉장고 재료 중 절반이상이 쓰여야 관련된 레시피로 반환
+    if (name) {
+      const regex = new RegExp(name, "i");
+
+      const recipes = await Recipe.find({
+        isDeleted: false,
+        $or: [
+          { name: { $regex: regex } },
+          { "ingredients.name": { $regex: regex } }
+        ]
       });
-      response.recipeList = filteredRecipes;
-    } else {
-      const recipes = await Recipe.find();
-      response.recipeList = recipes;
-    }
 
+      response.recipeList = recipes;
+    } else {
+      response.recipeList = [];
+    }
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
 };
+
 recipeController.getRecipesByCategory = async (req, res) => {
   try {
     const { food, mood, method, ingredient, etc } = req.query;
@@ -232,5 +228,34 @@ recipeController.updateReviewCnt = async (recipeId, num) => {
   if (typeof recipe.reviewCnt !== "number") recipe.reviewCnt = 0;
   recipe.reviewCnt += num;
   await recipe.save();
+};
+
+recipeController.getRecommendedRecipes = async (req, res) => {
+  try {
+    const { checkedItems } = req.query;
+
+    if (!checkedItems || checkedItems.length === 0) {
+      return res.status(400).json({ status: "fail", message: "No ingredients provided" });
+    }
+    
+    // 재료명이 "호두 500g"이런 식으로 되어있을 경우 분리해서 "호두"만 전달
+    const normalizedCheckedItems = checkedItems.split(',').map(item => item.split(' ')[0]);
+    const ingredientsSet = new Set(normalizedCheckedItems);
+    const recipes = await Recipe.find({ isDeleted: false });
+
+    // 가장 일치하는 레시피 계산 : 일치하는 재료가 있는 레시피만 리턴
+    const rankedRecipes = recipes.map(recipe => {
+      const recipeIngredients = recipe.ingredients.map(ing => ing.name);
+      const commonIngredients = recipeIngredients.filter(ing => ingredientsSet.has(ing));
+      return commonIngredients.length > 0 ? { recipe, score: commonIngredients.length } : null;
+    }).filter(Boolean);
+
+    // 일치하는 재료가 있는 레시피 중 순서대로 정렬 
+    rankedRecipes.sort((a, b) => b.score - a.score);
+
+    res.status(200).json({ status: "success", recipeList: rankedRecipes.map(r => r.recipe) });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
 };
 module.exports = recipeController;
