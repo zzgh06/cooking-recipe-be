@@ -31,7 +31,7 @@ const recipeSchema = Schema(
     images: [{ type: String }],
     userId: { type: mongoose.ObjectId, ref: User },
     time: { type: String },
-    servings: { type: Number },
+    servings: { type: String },
     difficulty: { type: String },
     isDeleted: { type: Boolean, default: false },
     reviewCnt: { type: Number, default: 0 },

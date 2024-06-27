@@ -120,7 +120,10 @@ authController.checkRecipeReviewUpdatePermission = async (req, res, next) => {
     const user = await User.findOne({ _id: userId, isDeleted: false });
     const reviewId = req.params.id;
     const review = RecipeReview.findById(reviewId);
-    if (!(userId === review.userId) && user.level !== "admin")
+    if (
+      !(userId.toString() === review.userId.toString()) &&
+      user.level !== "admin"
+    )
       throw Error("no review update permission");
     next();
   } catch (error) {
