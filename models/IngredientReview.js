@@ -5,8 +5,8 @@ const Ingredient = require("./Ingredient");
 const User = require("./User");
 const ingredientReviewSchema = Schema(
   {
-    ingredientId: { type: mongoose.ObjectId, ref: Ingredient, required: true },
-    userId: { type: mongoose.ObjectId, ref: User, required: true },
+    ingredientId: { type: mongoose.ObjectId, ref: 'Ingredient', required: true },
+    userId: { type: mongoose.ObjectId, ref: 'User', required: true },
     comment: { type: String, required: true },
     rating: { type: Number },
   },
