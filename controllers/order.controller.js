@@ -6,8 +6,9 @@ const PAGE_SIZE = 5;
 
 orderController.createOrder = async (req, res) => {
   try {
+    console.log(req.body);
     const { userId } = req;
-    const { contactInfo, totalPrice, status, items } = req.body;
+    const { contactInfo, totalPrice, items } = req.body;
 
     const insufficientStockItems =
       await ingredientController.checkItemListStock(items);
@@ -25,7 +26,7 @@ orderController.createOrder = async (req, res) => {
       userId,
       contactInfo,
       totalPrice,
-      status,
+
       items,
       orderNum: randomStringGenerator(),
     });
@@ -56,7 +57,7 @@ orderController.getOrder = async (req, res) => {
 
     const totalItemNum = await Order.find(query).count();
     const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
-
+    console.log(orderList);
     res.status(200).json({ status: "success", data: orderList, totalPageNum });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
