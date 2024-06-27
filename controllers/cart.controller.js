@@ -35,7 +35,10 @@ cartController.addItemToCart = async (req, res) =>{
         cart.items = [...cart.items, {ingredientId,qty}];
         await cart.save();
 
-        res.status(200).json({status:"success", data: cart});
+        await cart.populate('items.ingredientId')
+        const lastAddedItem = cart.items[cart.items.length - 1];
+
+        res.status(200).json({status:"success", data: lastAddedItem});
     }catch(error){
         res.status(400).json({status:"fail", error:error.message});
     }
@@ -58,7 +61,7 @@ cartController.updateCartItem = async (req, res) =>{
         cart.items[index].qty = qty;
         await cart.save();
 
-        res.status(200).json({status:"success", data: cart.items});
+        res.status(200).json({status:"success", data: cart.items[index]});
     }catch(error){
         res.status(400).json({status:"fail", error:error.message});
     }
@@ -72,6 +75,8 @@ cartController.deleteCartItem = async (req, res) =>{
 
         cart.items = cart.items.filter((item) => !item.ingredientId.equals(id));
         await cart.save();
+
+        await cart.populate('items.ingredientId');
 
         res.status(200).json({status:"success", data: cart.items});
     }catch(error){
