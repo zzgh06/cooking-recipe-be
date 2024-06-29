@@ -66,7 +66,7 @@ userController.getUsers = async (req, res) => {
     }
     const userList = await query.exec();
     response.data = userList;
-    console.log(1);
+    //console.log(1);
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
