@@ -1,6 +1,7 @@
 const Order = require("../models/Order");
 const ingredientController = require("./ingredient.controller");
 const { randomStringGenerator } = require("../utils/randomStringGenerator");
+const Ingredient = require("../models/Ingredient");
 const orderController = {};
 const PAGE_SIZE = 5;
 
@@ -30,6 +31,13 @@ orderController.createOrder = async (req, res) => {
       items,
       orderNum: randomStringGenerator(),
     });
+
+    for (const item of items) {
+      const ingredient = await Ingredient.findById(item.ingredientId);
+      ingredient.totalSales += item.qty;
+      await ingredient.save();
+    }
+
     await newOrder.save();
 
     res.status(200).json({ status: "success", orderNum: newOrder.orderNum });

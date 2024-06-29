@@ -13,6 +13,7 @@ const ingredientSchema = Schema(
     unit: { type: String },
     status: { type: String, default: "active" },
     reviewCnt: { type: Number, default: 0 },
+    totalSales: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
