@@ -7,7 +7,8 @@ ingredientReviewController.createReview = async (req, res) => {
   try {
     let { userId } = req;
 
-    let { comment, rating, ingredientId } = req.body;
+    let { comment, rating, recipeId } = req.body;
+    let ingredientId = recipeId;
     const newIngredientReview = new IngredientReview({
       userId,
       ingredientId,
