@@ -119,7 +119,7 @@ authController.checkRecipeReviewUpdatePermission = async (req, res, next) => {
     const { userId } = req;
     const user = await User.findOne({ _id: userId, isDeleted: false });
     const reviewId = req.params.id;
-    const review = RecipeReview.findById(reviewId);
+    const review = await RecipeReview.findById(reviewId);
     if (
       !(userId.toString() === review.userId.toString()) &&
       user.level !== "admin"
@@ -131,13 +131,20 @@ authController.checkRecipeReviewUpdatePermission = async (req, res, next) => {
   }
 };
 
-authController.checkIngredientReviewUpdatePermission = async (req, res,next) => {
+authController.checkIngredientReviewUpdatePermission = async (
+  req,
+  res,
+  next
+) => {
   try {
     const { userId } = req;
     const user = await User.findOne({ _id: userId, isDeleted: false });
     const reviewId = req.params.id;
     const review = await IngredientReview.findById(reviewId);
-    if (!(userId.toString() === review.userId.toString()) && user.level !== "admin")
+    if (
+      !(userId.toString() === review.userId.toString()) &&
+      user.level !== "admin"
+    )
       throw Error("no review update permission");
     next();
   } catch (error) {

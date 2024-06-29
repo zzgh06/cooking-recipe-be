@@ -41,24 +41,44 @@ orderController.createOrder = async (req, res) => {
 orderController.getOrder = async (req, res) => {
   try {
     const { userId } = req;
-    const { page = 1, orderNum } = req.query;
+    const { page, orderNum } = req.query;
     let query = { userId };
 
     if (orderNum) {
       query.orderNum = new RegExp(orderNum, "i");
     }
+    let orderList;
+    if (page) {
+      orderList = await Order.find(query)
+        .populate({
+          path: "items.ingredientId",
+        })
+        .skip((page - 1) * PAGE_SIZE)
+        .limit(PAGE_SIZE);
 
-    const orderList = await Order.find(query)
-      .populate({
+      const totalItemNum = await Order.find(query).count();
+      const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
+      res
+        .status(200)
+        .json({ status: "success", data: orderList, totalPageNum });
+    } else {
+      orderList = await Order.find(query).populate({
         path: "items.ingredientId",
-      })
-      .skip((page - 1) * PAGE_SIZE)
-      .limit(PAGE_SIZE);
+      });
 
-    const totalItemNum = await Order.find(query).count();
-    const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
-    //console.log(orderList);
-    res.status(200).json({ status: "success", data: orderList, totalPageNum });
+      res.status(200).json({ status: "success", data: orderList });
+    }
+    // const orderList = await Order.find(query)
+    //   .populate({
+    //     path: "items.ingredientId",
+    //   })
+    //   .skip((page - 1) * PAGE_SIZE)
+    //   .limit(PAGE_SIZE);
+
+    // const totalItemNum = await Order.find(query).count();
+    // const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
+    // //console.log(orderList);
+    // res.status(200).json({ status: "success", data: orderList, totalPageNum });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
