@@ -84,16 +84,17 @@ const PAGE_SIZE = 5;
 recipeController.getRecipes = async (req, res) => {
   try {
     const { page, name } = req.query;
-    const cond = name //대소문자 구별 안함
+    const cond = name 
       ? { name: { $regex: name, $options: "i" }, isDeleted: false }
       : { isDeleted: false };
     let query = Recipe.find(cond);
     const sortField = "reviewCnt";
     query = query.sort({ [sortField]: -1 });
+
     let response = { status: "success" };
     if (page) {
-      query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
-      const totalItemNum = await Recipe.find(cond).count();
+      query = query.skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE);
+      const totalItemNum = await Recipe.countDocuments(cond);
       const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
       response.totalPageNum = totalPageNum;
     }
