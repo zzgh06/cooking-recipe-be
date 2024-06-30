@@ -82,9 +82,9 @@ What’s in your fridge 는 사용자가 다양한 레시피를 확인하고, �
 
 ## 3. 프로젝트 구조
 -백앤드
-[cooking-recipe-be.md](cooking-recipe-be.md)
+[cooking-recipe-be.md](./cooking-recipe-be.txt)
 -프론트앤드
-[cooking-recipe-fe.md](cooking-recipe-fe.md)
+[cooking-recipe-fe.md](./cooking-recipe-fe.txt)
 
 ## 화면 구성
 |레시피 페이지|레시피 상세 페이지|
