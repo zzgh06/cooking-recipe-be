@@ -82,9 +82,9 @@ RecipeMaster는 사용자가 다양한 레시피를 확인하고, 필요한 식�
 
 ## 3. 프로젝트 구조
 -백앤드
-[cooking-recipe-be.txt](cooking-recipe-be.txt)
+[cooking-recipe-be.md](cooking-recipe-be.md)
 -프론트앤드
-[cooking-recipe-fe.txt](cooking-recipe-fe.txt)
+[cooking-recipe-fe.md](cooking-recipe-fe.md)
 
 ## 화면 구성
 |레시피 페이지|레시피 상세 페이지|
