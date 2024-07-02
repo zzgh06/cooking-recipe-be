@@ -8,10 +8,10 @@ const IngredientReview = require("../models/IngredientReview");
 require("dotenv").config();
 const authController = {};
 
-authController.loginWithEmail = async (req, res) => {
+authController.loginWithId = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    let user = await User.findOne({ email }, "-createdAt -updatedAt -__v");
+    const { id, password } = req.body;
+    let user = await User.findOne({ id }, "-createdAt -updatedAt -__v");
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
