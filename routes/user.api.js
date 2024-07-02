@@ -15,9 +15,8 @@ router.get(
 
 //test o
 router.put(
-  "/:id",
+  "/me",
   authController.authenticate,
-  authController.checkUserUpdatePermission,
   userController.updateUser
 );
 
