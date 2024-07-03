@@ -159,7 +159,6 @@ passwordController.changePassword = async (req, res) => {
     // 새로운 비밀번호 설정
     const salt = await bcrypt.genSaltSync(10);
     user.password = await bcrypt.hash(newPassword, salt);
-    // console.log('tttttttttt hashedPassword:', user.password);
     await user.save();
     res.status(200).json({
       status: 'success',
