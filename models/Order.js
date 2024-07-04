@@ -25,8 +25,6 @@ const orderSchema = Schema(
 );
 orderSchema.methods.toJSON = function () {
   const obj = this._doc;
-  delete obj.updatedAt;
-  delete obj.createAt;
   delete obj.__v;
   return obj;
 };
