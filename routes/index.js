@@ -9,6 +9,7 @@ const ingredientApi = require("./ingredient.api");
 const cartApi = require("./cart.api");
 const reviewApi = require("./review.api");
 const orderApi = require("./order.api");
+const favoriteApi = require("./favorite.api")
 
 router.use("/auth", authApi);
 router.use("/user", userApi);
@@ -19,5 +20,5 @@ router.use("/ingredient", ingredientApi);
 router.use("/cart", cartApi);
 router.use("/review", reviewApi);
 router.use("/order", orderApi);
-
+router.use('/favorite', favoriteApi);
 module.exports = router;
