@@ -34,53 +34,7 @@ recipeController.createRecipe = async (req, res) => {
     res.status(400).json({ status: "fail", error: error.message });
   }
 };
-//데이터 테스트
-// {
-//   "name": "소떡강정",
-//   "ingredients": [
-//       {
-//           "name": "비엔나소세지",
-//           "qty": "",
-//           "unit": ""
-//       },
-//       {
-//           "name": "떡볶이떡",
-//           "qty": "",
-//           "unit": ""
-//       },
-//       {
-//           "name": "식용유",
-//           "qty": "",
-//           "unit": ""
-//       }
-//   ],
-//   "descriptions": [
-//       {
-//           "description": "분량의 강정 양념을 만들어주세요"
-//       },
-//       {
-//           "description": "팬에 기름을 넉넉하게 두르고 떡과 소세지를 넣어주세요"
-//       },
-//       {
-//           "description": "양념이 잘 베이게 볶았다면 통깨를 뿌려주세요"
-//       },
-//       {
-//           "description": "된장국 완성"
-//       }
-//   ],
-//   "categories": {
-//       "foodCategory": "메인반찬",
-//       "moodCategory": "일상",
-//       "methodCategory": "볶음",
-//       "ingredientCategory": "가공식품류"
-//   },
-//   "images": [
-//       {
-//           "image": "123"
-//       }
-//   ]
-// }
-const PAGE_SIZE = 5;
+
 recipeController.getRecipes = async (req, res) => {
   try {
     const { page, name } = req.query;
@@ -101,6 +55,37 @@ recipeController.getRecipes = async (req, res) => {
     const recipeList = await query.exec();
     response.data = recipeList;
     res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+recipeController.getRecipesByCategory = async (req, res) => {
+  try {
+    const { food, mood, method, ingredient, etc, page = 1, limit = 12 } = req.query;
+    let query = {};
+    if (food) query["categories.food"] = food;
+    if (mood) query["categories.mood"] = mood;
+    if (method) query["categories.method"] = method;
+    if (ingredient) query["categories.ingredient"] = ingredient;
+    if (etc) query["categories.etc"] = etc;
+
+    const skip = (page - 1) * limit;
+    const recipeList = await Recipe.find(query).skip(skip).limit(Number(limit));
+    const totalRecipes = await Recipe.countDocuments(query);
+    const totalPages = Math.ceil(totalRecipes / limit);
+
+    console.log("page", page)
+    console.log("recipeList", recipeList)
+    console.log("totalRecipes", totalRecipes)
+    console.log("totalPages", totalPages)
+
+    res.status(200).json({
+      status: "success",
+      recipeList,
+      totalPages,
+      currentPage: page
+    });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
@@ -193,34 +178,6 @@ recipeController.getFrigeRecipes = async (req, res) => {
   }
 };
 
-recipeController.getRecipesByCategory = async (req, res) => {
-  try {
-    const { food, mood, method, ingredient, etc } = req.query;
-    let query = {};
-    if (food) query["categories.food"] = food;
-    if (mood) query["categories.mood"] = mood;
-    if (method) query["categories.method"] = method;
-    if (ingredient) query["categories.ingredient"] = ingredient;
-    if (etc) query["categories.etc"] = etc;
-    let recipeList = await Recipe.find(query);
-    // if (etc) {
-    //   const etcCategoryArray = etc.split(" "); //검색 카테고리
-    //   const filteredRecipes = recipeList.filter((recipe) => {
-    //     const etcArray = recipe.categories.etc; //레시피
-    //     //etcArray에 etcCategoryArray가 다 포함되어있을 경우 반환
-    //     return (
-    //       etcArray &&
-    //       etcCategoryArray.every((category) => etcArray.includes(category))
-    //     );
-    //   });
-    //   recipeList = filteredRecipes;
-    // }
-
-    res.status(200).json({ status: "success", recipeList: recipeList });
-  } catch (error) {
-    res.status(400).json({ status: "fail", error: error.message });
-  }
-};
 
 recipeController.updateReviewCnt = async (recipeId, num) => {
   const recipe = await Recipe.findById(recipeId);
