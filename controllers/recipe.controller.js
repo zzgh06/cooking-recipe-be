@@ -141,6 +141,25 @@ recipeController.deleteRecipe = async (req, res) => {
   }
 };
 
+recipeController.updateViewCount = async (req, res, next) => {
+  const recipeId = req.params.id;
+
+  try {
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      throw new Error('Recipe not found');
+    }
+
+    // 조회수 증가
+    recipe.viewCnt += 1;
+    await recipe.save();
+
+    next(); // 다음 미들웨어나 라우트 핸들러로 넘어감
+  } catch (error) {
+    res.status(400).json({ status: 'fail', error: error.message });
+  }
+};
+
 recipeController.getRecipeById = async (req, res) => {
   try {
     const recipeId = req.params.id;

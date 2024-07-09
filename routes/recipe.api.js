@@ -22,6 +22,6 @@ router.delete(
 );
 router.get("/category", recipeController.getRecipesByCategory);
 router.get("/frige", recipeController.getFrigeRecipes); //냉장고 재료 기반 검색용 //test
-router.get("/:id", recipeController.getRecipeById); //test
+router.get("/:id", recipeController.updateViewCount, recipeController.getRecipeById); //test
 router.get("/frige/recommend", recipeController.getRecommendedRecipes);
 module.exports = router;

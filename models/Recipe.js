@@ -35,6 +35,7 @@ const recipeSchema = Schema(
     difficulty: { type: String },
     isDeleted: { type: Boolean, default: false },
     reviewCnt: { type: Number, default: 0 },
+    viewCnt: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
