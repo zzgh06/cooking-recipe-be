@@ -75,11 +75,6 @@ recipeController.getRecipesByCategory = async (req, res) => {
     const totalRecipes = await Recipe.countDocuments(query);
     const totalPages = Math.ceil(totalRecipes / limit);
 
-    console.log("page", page)
-    console.log("recipeList", recipeList)
-    console.log("totalRecipes", totalRecipes)
-    console.log("totalPages", totalPages)
-
     res.status(200).json({
       status: "success",
       recipeList,

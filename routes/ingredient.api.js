@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get("/:id", ingredientController.getIngredient);
 router.get("/", ingredientController.getIngredients);
+router.get("/name/:name", ingredientController.getIngredientByName);
 
 router.post("/", 
     authController.authenticate,

@@ -56,6 +56,25 @@ ingredientController.getIngredient = async (req, res) => {
   }
 };
 
+ingredientController.getIngredientByName = async (req, res) => {
+  try {
+    const name = req.params.name;
+    const query = {
+      isDeleted: false,
+      name: { $regex: name, $options: "i" }, 
+    };
+    const ingredients = await Ingredient.find(query);
+    res.status(200).json({
+      status: "success",
+      data: {
+        ingredients,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
 //재료 생성
 ingredientController.createIngredient = async (req, res) => {
   try {
