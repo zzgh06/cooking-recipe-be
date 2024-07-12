@@ -62,7 +62,7 @@ recipeController.getRecipes = async (req, res) => {
 
 recipeController.getRecipesByCategory = async (req, res) => {
   try {
-    const { food, mood, method, ingredient, etc, page = 1, limit = 12 } = req.query;
+    const { food, mood, method, ingredient, etc, page, limit = 12 } = req.query;
     let query = {};
     if (food) query["categories.food"] = food;
     if (mood) query["categories.mood"] = mood;
@@ -70,8 +70,10 @@ recipeController.getRecipesByCategory = async (req, res) => {
     if (ingredient) query["categories.ingredient"] = ingredient;
     if (etc) query["categories.etc"] = etc;
 
-    const skip = (page - 1) * limit;
-    const recipeList = await Recipe.find(query).skip(skip).limit(Number(limit));
+    const recipeList = page ? 
+      await Recipe.find(query).skip((page - 1) * limit).limit(Number(limit)) :
+      await Recipe.find(query);
+
     const totalRecipes = await Recipe.countDocuments(query);
     const totalPages = Math.ceil(totalRecipes / limit);
 
@@ -85,6 +87,7 @@ recipeController.getRecipesByCategory = async (req, res) => {
     res.status(400).json({ status: "fail", error: error.message });
   }
 };
+
 
 recipeController.editRecipe = async (req, res) => {
   try {
