@@ -81,7 +81,7 @@ ingredientController.createIngredient = async (req, res) => {
     const {
       name,
       description,
-      image,
+      images,
       price,
       discountPrice,
       category,
@@ -94,7 +94,7 @@ ingredientController.createIngredient = async (req, res) => {
     const ingredient = new Ingredient({
       name,
       description,
-      image,
+      images,
       price,
       discountPrice,
       category,

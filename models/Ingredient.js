@@ -5,7 +5,7 @@ const ingredientSchema = Schema(
   {
     name: { type: String, required: true },
     description: { type: String, required: true },
-    image: { type: String, required: true },
+    images: [{ type: String }],
     price: { type: Number, required: true },
     discountPrice: { type: Number },
     category: { type: Array, required: true },
