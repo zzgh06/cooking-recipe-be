@@ -3,6 +3,7 @@ const Recipe = require("../models/Recipe");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
+const axios = require('axios');
 const RecipeReview = require("../models/RecipeReview");
 const IngredientReview = require("../models/IngredientReview");
 require("dotenv").config();
@@ -83,6 +84,43 @@ authController.loginWithGoogle = async (req, res) => {
     //b. 처음 로그인을 시도를 한 유저다 => 유저정보 먼저 새로 생성 => 토큰값
   } catch (error) {
     return res.status(400).json({ status: "fail", error: error.message });
+  }
+};
+
+authController.loginWithKakao = async (req, res) => {
+  const { token } = req.body;
+  // console.log('토큰 확인', token);
+  try {
+    const kakaoResponse = await axios.get('https://kapi.kakao.com/v2/user/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const kakaoProfile = kakaoResponse.data;
+    const { kakao_account, properties } = kakaoProfile;
+    const email = kakao_account.email;
+    const name = properties.nickname;
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      const randomPassword = "" + Math.floor(Math.random() * 1000000);
+      const salt = await bcrypt.genSalt(10);
+      const newPassword = await bcrypt.hash(randomPassword, salt);
+      user = new User({
+        name,
+        email,
+        password: newPassword,
+        id: email,
+      });
+      await user.save();
+    }
+
+    const sessionToken = await user.generateToken();
+    res.status(200).json({ status: 'success', user, token: sessionToken });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: '카카오 로그인에 실패하였습니다.' });
   }
 };
 
