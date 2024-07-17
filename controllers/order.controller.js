@@ -7,10 +7,8 @@ const PAGE_SIZE = 5;
 
 orderController.createOrder = async (req, res) => {
   try {
-    //(req.body);
     const { userId } = req;
     const { contactInfo, totalPrice, items } = req.body;
-
     const insufficientStockItems =
       await ingredientController.checkItemListStock(items);
 
@@ -27,7 +25,6 @@ orderController.createOrder = async (req, res) => {
       userId,
       contactInfo,
       totalPrice,
-
       items,
       orderNum: randomStringGenerator(),
     });
@@ -87,7 +84,7 @@ orderController.getOrderList = async (req, res) => {
     const condition = {};
 
     if (orderNum) {
-      condition.orderNum = { $regex: orderNum, $options: 'i' };
+      condition.orderNum = { $regex: orderNum, $options: "i" };
     }
     if (startDate && endDate) {
       condition.createdAt = {
@@ -104,12 +101,16 @@ orderController.getOrderList = async (req, res) => {
 
     // 페이지가 유효한지 확인
     if (page < 1) {
-      return res.status(400).json({ status: "fail", error: "Page must be greater than 0" });
+      return res
+        .status(400)
+        .json({ status: "fail", error: "Page must be greater than 0" });
     }
 
     // 페이지 초과 요청의 경우 빈 목록 반환
     if (totalPageNum > 0 && page > totalPageNum) {
-      return res.status(200).json({ status: "success", data: [], totalPageNum });
+      return res
+        .status(200)
+        .json({ status: "success", data: [], totalPageNum });
     }
 
     const orderList = await Order.find(condition)
