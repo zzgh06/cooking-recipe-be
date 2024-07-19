@@ -1,6 +1,5 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
-const nodemailer = require('nodemailer');
 require("dotenv").config();
 
 const userController = {};
@@ -54,6 +53,8 @@ userController.getUser = async (req, res) => {
     res.status(400).json({ status: "error", message: error.message });
   }
 };
+
+const PAGE_SIZE = 10;
 //모든 user 정보 리턴
 userController.getUsers = async (req, res) => {
   try {
@@ -71,7 +72,6 @@ userController.getUsers = async (req, res) => {
     }
     const userList = await query.exec();
     response.data = userList;
-    //console.log(1);
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
@@ -80,7 +80,7 @@ userController.getUsers = async (req, res) => {
 
 userController.updateUser = async (req, res) => {
   try {
-    const { userId } = req;  // 로그인된 유저의 ID를 사용합니다.
+    const { userId } = req;  
     const { email, name, shipTo, contact, image } = req.body;
     const updatedUser = await User.findByIdAndUpdate(
       { _id: userId },
@@ -88,7 +88,6 @@ userController.updateUser = async (req, res) => {
       { new: true }
     );
 
-    console.log(updatedUser)
     if (!updatedUser) throw new Error("User not found");
     res.status(200).json({ status: "success", data: updatedUser });
   } catch (error) {
