@@ -46,33 +46,24 @@ orderController.createOrder = async (req, res) => {
 orderController.getOrder = async (req, res) => {
   try {
     const { userId } = req;
-    const { page, orderNum } = req.query;
+    const { page = 1, orderNum } = req.query;
     let query = { userId };
 
     if (orderNum) {
       query.orderNum = new RegExp(orderNum, "i");
     }
-    let orderList;
-    if (page) {
-      orderList = await Order.find(query)
-        .populate({
-          path: "items.ingredientId",
-        })
-        .skip((page - 1) * PAGE_SIZE)
-        .limit(PAGE_SIZE);
 
-      const totalItemNum = await Order.find(query).count();
-      const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
-      res
-        .status(200)
-        .json({ status: "success", data: orderList, totalPageNum });
-    } else {
-      orderList = await Order.find(query).populate({
+    const orderList = await Order.find(query)
+      .populate({
         path: "items.ingredientId",
-      });
+      })
+      .skip((page - 1) * PAGE_SIZE)
+      .limit(PAGE_SIZE);
 
-      res.status(200).json({ status: "success", data: orderList });
-    }
+    const totalItemNum = await Order.countDocuments(query);
+    const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
+
+    res.status(200).json({ status: "success", data: orderList, totalPageNum });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
@@ -93,24 +84,15 @@ orderController.getOrderList = async (req, res) => {
       };
     }
 
-    const PAGE_SIZE = 5; // 페이지 당 아이템 수 (원하는 값으로 설정)
-
-    // 전체 아이템 수를 먼저 계산
-    const totalItemNum = await Order.find(condition).countDocuments();
+    const totalItemNum = await Order.countDocuments(condition);
     const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
 
-    // 페이지가 유효한지 확인
     if (page < 1) {
-      return res
-        .status(400)
-        .json({ status: "fail", error: "Page must be greater than 0" });
+      return res.status(400).json({ status: "fail", error: "Page must be greater than 0" });
     }
 
-    // 페이지 초과 요청의 경우 빈 목록 반환
     if (totalPageNum > 0 && page > totalPageNum) {
-      return res
-        .status(200)
-        .json({ status: "success", data: [], totalPageNum });
+      return res.status(200).json({ status: "success", data: [], totalPageNum });
     }
 
     const orderList = await Order.find(condition)
