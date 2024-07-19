@@ -25,16 +25,27 @@ recipeReviewController.createReview = async (req, res) => {
 recipeReviewController.getReviews = async (req, res) => {
   try {
     const recipeId = req.params.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
 
-    const reviews = await RecipeReview.find({ recipeId }).populate("userId");
+    const reviews = await RecipeReview.find({ recipeId })
+      .populate("userId")
+      .skip(skip)
+      .limit(limit);
+
+    const totalReviews = await RecipeReview.countDocuments({ recipeId });
+    const allReviews = await RecipeReview.find({ recipeId });
+
     if (reviews) {
-      return res.status(200).json({ status: "success", reviews });
+      return res.status(200).json({ status: "success", reviews, totalReviews, allReviews });
     }
     throw new Error("getReviews error");
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
 };
+
 
 recipeReviewController.deleteReview = async (req, res) => {
   try {
