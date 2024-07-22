@@ -46,11 +46,18 @@ orderController.createOrder = async (req, res) => {
 orderController.getOrder = async (req, res) => {
   try {
     const { userId } = req;
-    const { page = 1, orderNum } = req.query;
+    const { page = 1, orderNum, startDate, endDate  } = req.query;
     let query = { userId };
 
     if (orderNum) {
       query.orderNum = new RegExp(orderNum, "i");
+    }
+
+    if (startDate && endDate) {
+      query.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
     }
 
     const orderList = await Order.find(query)
