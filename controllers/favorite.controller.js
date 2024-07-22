@@ -7,7 +7,7 @@ favoriteController.getRecipeFavorites = async (req, res) => {
     const favorites = await Favorite.findOne({ userId });
     res.status(200).json({status : "success",  data : favorites});
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -29,7 +29,7 @@ favoriteController.addRecipeFavorites = async (req, res) => {
     }
     res.status(200).json({status : "success"});
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -44,7 +44,7 @@ favoriteController.deleteRecipeFavorites = async (req, res) => {
     }
     res.status(200).json({status : "success"});
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
