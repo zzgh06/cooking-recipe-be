@@ -14,8 +14,6 @@ cartController.getCart = async (req, res) => {
       },
     });
 
-    console.log("Cart items from DB:", cart);
-
     res.status(200).json({ status: "success", data: cart.items });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
@@ -81,12 +79,14 @@ cartController.deleteCartItem = async (req, res) => {
 
     const cart = await Cart.findOne({ userId });
     if (!cart) {
-      throw new Error("카트를 찾을 수 없습니다.");
+      console.error("Cart not found for user:", userId);
+      return res.status(404).json({ status: "fail", error: "Cart not found" });
     }
 
     const itemIndex = cart.items.findIndex((item) => item.ingredientId.equals(id));
     if (itemIndex === -1) {
-      throw new Error("카트에서 상품을 찾을 수 없습니다.");
+      console.error("Item not found in cart:", id);
+      return res.status(404).json({ status: "fail", error: "Item not found in cart" });
     }
 
     cart.items.splice(itemIndex, 1);
@@ -94,13 +94,12 @@ cartController.deleteCartItem = async (req, res) => {
 
     await cart.populate("items.ingredientId");
 
-    console.log("deleteCartItem - updated cart items:", cart.items);
-
     res.status(200).json({ status: "success", data: cart.items });
   } catch (error) {
     console.error("Error deleting cart item:", error);
     res.status(400).json({ status: "fail", error: error.message });
   }
 };
+
 
 module.exports = cartController;

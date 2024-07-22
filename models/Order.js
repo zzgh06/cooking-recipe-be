@@ -28,12 +28,12 @@ orderSchema.methods.toJSON = function () {
   delete obj.__v;
   return obj;
 };
-orderSchema.post("save", async function () {
-  //카트를 비워주자
-  const cart = await Cart.findOne({ userId: this.userId });
-  cart.items = [];
-  await cart.save();
-});
+// orderSchema.post("save", async function () {
+//   //카트를 비워주자
+//   const cart = await Cart.findOne({ userId: this.userId });
+//   cart.items = [];
+//   await cart.save();
+// });
 
 const Order = mongoose.model("Order", orderSchema);
 module.exports = Order;
