@@ -15,6 +15,7 @@ const ingredientSchema = Schema(
     reviewCnt: { type: Number, default: 0 },
     totalSales: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false },
+    completed: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

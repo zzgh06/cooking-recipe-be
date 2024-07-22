@@ -133,7 +133,7 @@ recipeController.deleteRecipe = async (req, res) => {
       { isDeleted: true }
     );
     if (!recipe) throw new Error("No recipe found");
-    res.status(200).json({ state: "success" });
+    res.status(200).json({ status: "success" });
   } catch (error) {
     return res.status(400).json({ status: "fail", error: error.message });
   }
