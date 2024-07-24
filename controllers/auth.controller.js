@@ -20,7 +20,7 @@ authController.loginWithId = async (req, res) => {
         return res.status(200).json({ status: "success", user, token });
       }
     }
-    throw new Error("invalid email or password");
+    throw new Error("아이디 혹은 비밀번호를 확인해주세요");
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
@@ -89,7 +89,6 @@ authController.loginWithGoogle = async (req, res) => {
 
 authController.loginWithKakao = async (req, res) => {
   const { token } = req.body;
-  // console.log('토큰 확인', token);
   try {
     const kakaoResponse = await axios.get('https://kapi.kakao.com/v2/user/me', {
       headers: {
@@ -141,9 +140,9 @@ authController.checkRecipeUpdatePermission = async (req, res, next) => {
 
 authController.checkUserUpdatePermission = async (req, res, next) => {
   try {
-    const { userId } = req; //token 로그인에서 얻어낸 아이디
+    const { userId } = req; 
     const user = await User.findById(userId);
-    const userIdFromParams = req.params.id; //수정할려는 유저정보 아이디
+    const userIdFromParams = req.params.id;
     if (!(userId === userIdFromParams) && user.level !== "admin")
       throw Error("no user update permission");
     next();

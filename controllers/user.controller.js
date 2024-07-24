@@ -10,12 +10,12 @@ userController.createUser = async (req, res) => {
     let { email, password, id, level, image, shipTo, contact, name } = req.body;
 
     // 이메일 중복검사
-    // const userWithEmail = await User.findOne({ email });
-    // if (userWithEmail) throw new Error("이미 등록된 이메일입니다.");
+    const userWithEmail = await User.findOne({ email });
+    if (userWithEmail) throw new Error("이미 등록된 이메일입니다.");
 
-    // // 중복 아이디 검사
-    // const userWithId = await User.findOne({ id });
-    // if (userWithId) throw new Error("중복된 아이디입니다.");
+    // 중복 아이디 검사
+    const userWithId = await User.findOne({ id });
+    if (userWithId) throw new Error("중복된 아이디입니다.");
 
     //비밀번호 암호화
     const salt = await bcrypt.genSaltSync(10);
@@ -44,7 +44,6 @@ userController.getUser = async (req, res) => {
   try {
     const { userId } = req;
     const user = await User.findOne({ _id: userId, isDeleted: false });
-    // console.log("user", user)
     if (user) {
       return res.status(200).json({ status: "success", user });
     }

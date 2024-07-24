@@ -16,11 +16,9 @@ passwordController.forgotPassword = async (req, res) => {
       throw new Error('해당 이메일로 가입된 사용자가 없습니다.');
     }
 
-    console.log("user", user)
-
     const token = crypto.randomBytes(20).toString('hex');
     user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 36000000; // 1시간 유효
+    user.resetPasswordExpires = Date.now() + 3600000; 
     await user.save();
 
     // nodemailer 로 이메일 보내기
