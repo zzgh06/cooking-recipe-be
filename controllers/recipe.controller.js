@@ -16,6 +16,7 @@ recipeController.createRecipe = async (req, res) => {
       servings,
       difficulty,
     } = req.body;
+    
     const recipe = new Recipe({
       name,
       description,
@@ -29,8 +30,10 @@ recipeController.createRecipe = async (req, res) => {
       difficulty,
     });
     await recipe.save();
+
     res.status(200).json({ status: "success", recipe });
   } catch (error) {
+    console.log("recipe", error.message);
     res.status(400).json({ status: "fail", error: error.message });
   }
 };
@@ -38,7 +41,7 @@ recipeController.createRecipe = async (req, res) => {
 recipeController.getRecipes = async (req, res) => {
   try {
     const { page, name } = req.query;
-    const cond = name 
+    const cond = name
       ? { name: { $regex: name, $options: "i" }, isDeleted: false }
       : { isDeleted: false };
     let query = Recipe.find(cond);
@@ -70,9 +73,11 @@ recipeController.getRecipesByCategory = async (req, res) => {
     if (ingredient) query["categories.ingredient"] = ingredient;
     if (etc) query["categories.etc"] = etc;
 
-    const recipeList = page ? 
-      await Recipe.find(query).skip((page - 1) * limit).limit(Number(limit)) :
-      await Recipe.find(query);
+    const recipeList = page
+      ? await Recipe.find(query)
+          .skip((page - 1) * limit)
+          .limit(Number(limit))
+      : await Recipe.find(query);
 
     const totalRecipes = await Recipe.countDocuments(query);
     const totalPages = Math.ceil(totalRecipes / limit);
@@ -81,13 +86,12 @@ recipeController.getRecipesByCategory = async (req, res) => {
       status: "success",
       recipeList,
       totalPages,
-      currentPage: page
+      currentPage: page,
     });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
 };
-
 
 recipeController.editRecipe = async (req, res) => {
   try {
@@ -116,7 +120,7 @@ recipeController.editRecipe = async (req, res) => {
         servings,
         difficulty,
       },
-      { new: true } //업데이트 된 문서 반환
+      { new: true } 
     );
     if (!recipe) throw new Error("recipe doesn't exist");
     res.status(200).json({ status: "success", data: recipe });
@@ -145,16 +149,15 @@ recipeController.updateViewCount = async (req, res, next) => {
   try {
     const recipe = await Recipe.findById(recipeId);
     if (!recipe) {
-      throw new Error('Recipe not found');
+      throw new Error("Recipe not found");
     }
-
-    // 조회수 증가
+    
     recipe.viewCnt += 1;
     await recipe.save();
 
-    next(); // 다음 미들웨어나 라우트 핸들러로 넘어감
+    next(); 
   } catch (error) {
-    res.status(400).json({ status: 'fail', error: error.message });
+    res.status(400).json({ status: "fail", error: error.message });
   }
 };
 
@@ -195,10 +198,8 @@ recipeController.getFrigeRecipes = async (req, res) => {
   }
 };
 
-
 recipeController.updateReviewCnt = async (recipeId, num) => {
   const recipe = await Recipe.findById(recipeId);
-  //console.log(recipeId);
   if (!recipe) throw new Error("update reviewCnt error");
   if (typeof recipe.reviewCnt !== "number") recipe.reviewCnt = 0;
   recipe.reviewCnt += num;
@@ -238,12 +239,10 @@ recipeController.getRecommendedRecipes = async (req, res) => {
     // 일치하는 재료가 있는 레시피 중 순서대로 정렬
     rankedRecipes.sort((a, b) => b.score - a.score);
 
-    res
-      .status(200)
-      .json({
-        status: "success",
-        recipeList: rankedRecipes.map((r) => r.recipe),
-      });
+    res.status(200).json({
+      status: "success",
+      recipeList: rankedRecipes.map((r) => r.recipe),
+    });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }

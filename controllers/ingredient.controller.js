@@ -2,12 +2,11 @@ const Ingredient = require("../models/Ingredient");
 
 const ingredientController = {};
 
-//삭제되지 않은 모든 재료를 리턴
 const PAGE_SIZE = 5;
 ingredientController.getIngredients = async (req, res) => {
-  //"채소", "과일", "육류", "해산물", "유제품 및 달걀", "곡류 및 빵", "조미료 및 소스", "냉장 및 냉동식품", "기타"
   try {
     const { page, name, category } = req.query;
+
     const query = { isDeleted: false };
 
     if (name) {
@@ -56,24 +55,6 @@ ingredientController.getIngredient = async (req, res) => {
   }
 };
 
-ingredientController.getIngredientByName = async (req, res) => {
-  try {
-    const name = req.params.name;
-    const query = {
-      isDeleted: false,
-      name: { $regex: name, $options: "i" }, 
-    };
-    const ingredients = await Ingredient.find(query);
-    res.status(200).json({
-      status: "success",
-      data: {
-        ingredients,
-      },
-    });
-  } catch (error) {
-    res.status(400).json({ status: "fail", error: error.message });
-  }
-};
 
 //재료 생성
 ingredientController.createIngredient = async (req, res) => {

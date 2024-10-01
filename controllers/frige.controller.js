@@ -7,14 +7,13 @@ frigeController.addIngredient = async (req, res) => {
   try {
     const { userId } = req;
     let userFrige = await Frige.findOne({ userId });
-    //냉장고 없으면 만들기
+
     if (!userFrige) {
       userFrige = new Frige({ userId, items: [] });
     }
 
-    const addIngredients = req.body.items; //items:[ {ingfedientId:"id"}, {ingfedientId:"id"}]
+    const addIngredients = req.body.items;
     addIngredients.forEach((addIngredient) => {
-      //냉장고에 재료가 이미 있는지 확인
       const alreadyExists = userFrige.items.find(
         (item) =>
           item.ingredientId.toString() === addIngredient.ingredientId.toString()

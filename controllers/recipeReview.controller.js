@@ -51,9 +51,6 @@ recipeReviewController.deleteReview = async (req, res) => {
   try {
     const recipeReviewId = req.params.id;
     const _review = await RecipeReview.findById(recipeReviewId);
-    //console.log(_review);
-    //console.log(_review.recipeId);
-
     const review = await RecipeReview.deleteOne({ _id: recipeReviewId });
     await recipeController.updateReviewCnt(_review.recipeId, -1);
     res

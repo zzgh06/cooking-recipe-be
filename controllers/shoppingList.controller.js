@@ -16,14 +16,19 @@ shoppingListController.addItems = async (req, res) => {
       });
     }
 
-    const itemsToAdd = items.map(item => ({
-      ...item,
-      completed: false
-    }));
+    const existingItemIds = shoppingList.items.map((item) => item._id.toString());
+    const itemsToAdd = items
+      .filter((item) => !existingItemIds.includes(item._id.toString()))
+      .map((item) => ({
+        ...item,
+        completed: false,
+      }));
 
-    shoppingList.items.push(...itemsToAdd);
+    if (itemsToAdd.length > 0) {
+      shoppingList.items.push(...itemsToAdd);
+      await shoppingList.save();
+    }
 
-    await shoppingList.save();
     res.status(200).json({ status: "success", data: shoppingList.items });
   } catch (error) {
     res.status(400).json({ status: "error", error: error.message });
