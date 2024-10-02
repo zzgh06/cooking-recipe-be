@@ -78,7 +78,7 @@ orderController.getOrder = async (req, res) => {
 
 orderController.getOrderList = async (req, res) => {
   try {
-    const { page = 1, orderNum, startDate, endDate } = req.query;
+    const { page, orderNum, startDate, endDate } = req.query;
     const condition = {};
 
     if (orderNum) {
@@ -89,6 +89,15 @@ orderController.getOrderList = async (req, res) => {
         $gte: new Date(startDate),
         $lte: new Date(endDate),
       };
+    }
+
+    if (!page) {
+      const orderList = await Order.find(condition)
+        .populate("userId")
+        .populate({
+          path: "items.ingredientId",
+        });
+      return res.status(200).json({ status: "success", data: orderList, totalPageNum: 1 });
     }
 
     const totalItemNum = await Order.countDocuments(condition);
