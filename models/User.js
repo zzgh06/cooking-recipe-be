@@ -7,11 +7,16 @@ const userSchema = Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     id: { type: String, required: true },
-    level: { type: String, default: "customer" }, //2types: customer, admin
+    level: { type: String, default: "customer" },
     name: { type: String },
     shipTo: { type: Object },
     contact: { type: Object },
     isDeleted: { type: Boolean, default: false },
+
+    resetPasswordToken: { type: String, default: undefined },
+    resetPasswordExpires: { type: Date, default: undefined },
+
+    image: { type: String, default: '' },
   },
   { timestamps: true }
 );

@@ -2,12 +2,11 @@ const Ingredient = require("../models/Ingredient");
 
 const ingredientController = {};
 
-//삭제되지 않은 모든 재료를 리턴
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 8;
 ingredientController.getIngredients = async (req, res) => {
-  //"채소", "과일", "육류", "해산물", "유제품 및 달걀", "곡류 및 빵", "조미료 및 소스", "냉장 및 냉동식품", "기타"
   try {
     const { page, name, category } = req.query;
+
     const query = { isDeleted: false };
 
     if (name) {
@@ -43,7 +42,6 @@ ingredientController.getIngredients = async (req, res) => {
   }
 };
 
-//재료 하나 리턴
 ingredientController.getIngredient = async (req, res) => {
   try {
     const ingredientId = req.params.id;
@@ -56,13 +54,12 @@ ingredientController.getIngredient = async (req, res) => {
   }
 };
 
-//재료 생성
 ingredientController.createIngredient = async (req, res) => {
   try {
     const {
       name,
       description,
-      image,
+      images,
       price,
       discountPrice,
       category,
@@ -75,7 +72,7 @@ ingredientController.createIngredient = async (req, res) => {
     const ingredient = new Ingredient({
       name,
       description,
-      image,
+      images,
       price,
       discountPrice,
       category,
@@ -91,7 +88,6 @@ ingredientController.createIngredient = async (req, res) => {
   }
 };
 
-//재료 수정
 ingredientController.updateIngredient = async (req, res) => {
   try {
     const ingredientId = req.params.id;
@@ -130,7 +126,6 @@ ingredientController.updateIngredient = async (req, res) => {
   }
 };
 
-//재료 삭제
 ingredientController.deleteIngredient = async (req, res) => {
   try {
     const ingredientId = req.params.id;
@@ -145,7 +140,6 @@ ingredientController.deleteIngredient = async (req, res) => {
   }
 };
 
-//재고 하나 체크
 ingredientController.checkStock = async (item) => {
   const ingredient = await Ingredient.findById(item.ingredientId);
   if (ingredient.stock < item.qty) {
@@ -158,7 +152,6 @@ ingredientController.checkStock = async (item) => {
   return { isVerify: true };
 };
 
-//재고 전부 체크
 ingredientController.checkItemListStock = async (items) => {
   const insufficientStockItems = [];
   await Promise.all(

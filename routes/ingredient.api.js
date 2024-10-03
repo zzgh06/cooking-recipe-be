@@ -4,6 +4,7 @@ const authController = require("../controllers/auth.controller");
 const router = express.Router();
 
 router.get("/:id", ingredientController.getIngredient);
+
 router.get("/", ingredientController.getIngredients);
 
 router.post("/", 

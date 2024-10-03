@@ -7,10 +7,8 @@ const PAGE_SIZE = 5;
 
 orderController.createOrder = async (req, res) => {
   try {
-    //(req.body);
     const { userId } = req;
     const { contactInfo, totalPrice, items } = req.body;
-
     const insufficientStockItems =
       await ingredientController.checkItemListStock(items);
 
@@ -27,7 +25,6 @@ orderController.createOrder = async (req, res) => {
       userId,
       contactInfo,
       totalPrice,
-
       items,
       orderNum: randomStringGenerator(),
     });
@@ -49,44 +46,31 @@ orderController.createOrder = async (req, res) => {
 orderController.getOrder = async (req, res) => {
   try {
     const { userId } = req;
-    const { page, orderNum } = req.query;
+    const { page = 1, orderNum, startDate, endDate  } = req.query;
     let query = { userId };
 
     if (orderNum) {
       query.orderNum = new RegExp(orderNum, "i");
     }
-    let orderList;
-    if (page) {
-      orderList = await Order.find(query)
-        .populate({
-          path: "items.ingredientId",
-        })
-        .skip((page - 1) * PAGE_SIZE)
-        .limit(PAGE_SIZE);
 
-      const totalItemNum = await Order.find(query).count();
-      const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
-      res
-        .status(200)
-        .json({ status: "success", data: orderList, totalPageNum });
-    } else {
-      orderList = await Order.find(query).populate({
-        path: "items.ingredientId",
-      });
-
-      res.status(200).json({ status: "success", data: orderList });
+    if (startDate && endDate) {
+      query.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
     }
-    // const orderList = await Order.find(query)
-    //   .populate({
-    //     path: "items.ingredientId",
-    //   })
-    //   .skip((page - 1) * PAGE_SIZE)
-    //   .limit(PAGE_SIZE);
 
-    // const totalItemNum = await Order.find(query).count();
-    // const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
-    // //console.log(orderList);
-    // res.status(200).json({ status: "success", data: orderList, totalPageNum });
+    const orderList = await Order.find(query)
+      .populate({
+        path: "items.ingredientId",
+      })
+      .skip((page - 1) * PAGE_SIZE)
+      .limit(PAGE_SIZE);
+
+    const totalItemNum = await Order.countDocuments(query);
+    const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
+
+    res.status(200).json({ status: "success", data: orderList, totalPageNum });
   } catch (error) {
     res.status(400).json({ status: "fail", error: error.message });
   }
@@ -94,22 +78,46 @@ orderController.getOrder = async (req, res) => {
 
 orderController.getOrderList = async (req, res) => {
   try {
-    const { page = 1, orderNum } = req.query;
-    let query = {};
+    const { page, orderNum, startDate, endDate } = req.query;
+    const condition = {};
 
     if (orderNum) {
-      query.orderNum = new RegExp(orderNum, "i");
+      condition.orderNum = { $regex: orderNum, $options: "i" };
+    }
+    if (startDate && endDate) {
+      condition.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
     }
 
-    const orderList = await Order.find(query)
+    if (!page) {
+      const orderList = await Order.find(condition)
+        .populate("userId")
+        .populate({
+          path: "items.ingredientId",
+        });
+      return res.status(200).json({ status: "success", data: orderList, totalPageNum: 1 });
+    }
+
+    const totalItemNum = await Order.countDocuments(condition);
+    const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
+
+    if (page < 1) {
+      return res.status(400).json({ status: "fail", error: "Page must be greater than 0" });
+    }
+
+    if (totalPageNum > 0 && page > totalPageNum) {
+      return res.status(200).json({ status: "success", data: [], totalPageNum });
+    }
+
+    const orderList = await Order.find(condition)
       .populate("userId")
       .populate({
         path: "items.ingredientId",
       })
       .skip((page - 1) * PAGE_SIZE)
       .limit(PAGE_SIZE);
-    const totalItemNum = await Order.find(query).count();
-    const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
 
     res.status(200).json({ status: "success", data: orderList, totalPageNum });
   } catch (error) {

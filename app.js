@@ -7,7 +7,7 @@ require("dotenv").config();
 
 const app = express();
 
-app.use(morgan("dev"));
+app.use(morgan('combined'));
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -20,7 +20,7 @@ const mongoURI = mongoURI_PROD;
 // const mongoURI = mongoURI_LOCAL;
 
 mongoose
-  .connect(mongoURI, { useNewUrlParser: true })
+  .connect(mongoURI)
   .then(() => console.log("mongoose connected"))
   .catch((err) => console.log("DB connection fail", err));
 

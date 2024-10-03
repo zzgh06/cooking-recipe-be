@@ -5,7 +5,7 @@ const ingredientSchema = Schema(
   {
     name: { type: String, required: true },
     description: { type: String, required: true },
-    image: { type: String, required: true },
+    images: [{ type: String }],
     price: { type: Number, required: true },
     discountPrice: { type: Number },
     category: { type: Array, required: true },
@@ -15,6 +15,7 @@ const ingredientSchema = Schema(
     reviewCnt: { type: Number, default: 0 },
     totalSales: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false },
+    completed: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

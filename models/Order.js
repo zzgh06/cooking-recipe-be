@@ -25,17 +25,9 @@ const orderSchema = Schema(
 );
 orderSchema.methods.toJSON = function () {
   const obj = this._doc;
-  delete obj.updatedAt;
-  delete obj.createAt;
   delete obj.__v;
   return obj;
 };
-orderSchema.post("save", async function () {
-  //카트를 비워주자
-  const cart = await Cart.findOne({ userId: this.userId });
-  cart.items = [];
-  await cart.save();
-});
 
 const Order = mongoose.model("Order", orderSchema);
 module.exports = Order;
