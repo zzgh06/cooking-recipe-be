@@ -66,7 +66,8 @@ recipeController.getRecipes = async (req, res) => {
 recipeController.getRecipesByCategory = async (req, res) => {
   try {
     const { food, mood, method, ingredient, etc, page, limit = 12 } = req.query;
-    let query = {};
+    let query = { isDeleted: false };
+    
     if (food) query["categories.food"] = food;
     if (mood) query["categories.mood"] = mood;
     if (method) query["categories.method"] = method;

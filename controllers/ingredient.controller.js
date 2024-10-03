@@ -2,7 +2,7 @@ const Ingredient = require("../models/Ingredient");
 
 const ingredientController = {};
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 8;
 ingredientController.getIngredients = async (req, res) => {
   try {
     const { page, name, category } = req.query;
