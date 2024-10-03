@@ -31,7 +31,7 @@ passwordController.forgotPassword = async (req, res) => {
       from: 'passwordreset@demo.com',
       subject: '비밀번호 재설정 요청',
       text: `다음 링크를 클릭하여 비밀번호를 재설정하세요:\n\n
-        ${process.env.LOCAL_FRONTEND_URL}/reset-password/${token}\n\n
+        ${process.env.PROD_FRONTEND_URL}/reset-password/${token}\n\n
         만약 본인이 요청한 것이 아니라면 이 이메일을 무시하세요.`,
     };
 
@@ -144,7 +144,7 @@ passwordController.changePassword = async (req, res) => {
     const salt = await bcrypt.genSaltSync(10);
     user.password = await bcrypt.hash(newPassword, salt);
     await user.save();
-    
+
     res.status(200).json({
       status: 'success',
       message: '비밀번호가 성공적으로 변경되었습니다.',
