@@ -42,7 +42,6 @@ ingredientController.getIngredients = async (req, res) => {
   }
 };
 
-//재료 하나 리턴
 ingredientController.getIngredient = async (req, res) => {
   try {
     const ingredientId = req.params.id;
@@ -55,8 +54,6 @@ ingredientController.getIngredient = async (req, res) => {
   }
 };
 
-
-//재료 생성
 ingredientController.createIngredient = async (req, res) => {
   try {
     const {
@@ -91,7 +88,6 @@ ingredientController.createIngredient = async (req, res) => {
   }
 };
 
-//재료 수정
 ingredientController.updateIngredient = async (req, res) => {
   try {
     const ingredientId = req.params.id;
@@ -130,7 +126,6 @@ ingredientController.updateIngredient = async (req, res) => {
   }
 };
 
-//재료 삭제
 ingredientController.deleteIngredient = async (req, res) => {
   try {
     const ingredientId = req.params.id;
@@ -145,7 +140,6 @@ ingredientController.deleteIngredient = async (req, res) => {
   }
 };
 
-//재고 하나 체크
 ingredientController.checkStock = async (item) => {
   const ingredient = await Ingredient.findById(item.ingredientId);
   if (ingredient.stock < item.qty) {
@@ -158,7 +152,6 @@ ingredientController.checkStock = async (item) => {
   return { isVerify: true };
 };
 
-//재고 전부 체크
 ingredientController.checkItemListStock = async (items) => {
   const insufficientStockItems = [];
   await Promise.all(

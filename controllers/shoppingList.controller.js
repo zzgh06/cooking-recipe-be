@@ -93,12 +93,10 @@ shoppingListController.moveToCompletedList = async (req, res) => {
         .json({ status: "error", message: "Shopping list not found" });
     }
 
-    // 장보기 목록에서 아이템 제거
     shoppingList.items = shoppingList.items.filter(
       (i) => i._id.toString() !== item._id.toString()
     );
 
-    // 완료 목록에 아이템 추가
     shoppingList.items.push({
       _id: item._id,
       name: item.name,

@@ -26,7 +26,6 @@ authController.loginWithId = async (req, res) => {
   }
 };
 
-//토큰을 가지고 누군지 userId를 확인하는 함수
 authController.authenticate = async (req, res, next) => {
   try {
     const tokenString = req.headers.authorization;
@@ -41,7 +40,7 @@ authController.authenticate = async (req, res, next) => {
     res.status(400).json({ status: "fail", error: error.message });
   }
 };
-//관리자 계정인지 확인
+
 authController.checkAdminPermission = async (req, res, next) => {
   try {
     const { userId } = req;
@@ -64,7 +63,6 @@ authController.loginWithGoogle = async (req, res) => {
 
     let user = await User.findOne({ email });
     if (!user) {
-      //유저 새로 생성
       const randomPassword = "" + Math.floor(Math.random() * 1000000);
       const salt = await bcrypt.genSalt(10);
       const newPassword = await bcrypt.hash(randomPassword, salt);
@@ -76,12 +74,9 @@ authController.loginWithGoogle = async (req, res) => {
       });
       await user.save();
     }
-    //토큰을 발행하고 리턴
+
     const sessionToken = await user.generateToken();
     res.status(200).json({ status: "success", user, token: sessionToken });
-    //토큰값을 읽어와서 => 유저정보를 뽑아내고 email
-    //a. 이미 로그인을 한적이 있는 유저 => 로그인시키고 토큰값 주며됨
-    //b. 처음 로그인을 시도를 한 유저다 => 유저정보 먼저 새로 생성 => 토큰값
   } catch (error) {
     return res.status(400).json({ status: "fail", error: error.message });
   }
