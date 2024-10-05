@@ -20,7 +20,7 @@ router.delete(
   recipeController.deleteRecipe
 );
 router.get("/category", recipeController.getRecipesByCategory);
-router.get("/frige", recipeController.getFrigeRecipes);
+// router.get("/frige", recipeController.getFrigeRecipes);
 router.get("/:id", recipeController.updateViewCount, recipeController.getRecipeById);
 router.get("/frige/recommend", recipeController.getRecommendedRecipes);
 module.exports = router;

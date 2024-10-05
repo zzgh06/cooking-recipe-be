@@ -12,13 +12,13 @@ What’s in your fridge 는 사용자가 다양한 레시피를 확인하고, �
 
 ### 배포 주소
 
-><div>프론트 서버 : https://whats-is-your-fridge.netlify.app/</div>
->백엔드 서버 : http://what-is-your-fridge.us-east-1.elasticbeanstalk.com/
-<br>
+> <div>프론트 서버 : https://whats-in-yours-fridge.netlify.app</div>
+> 백엔드 서버 : http://whats-in-your-fridge.ap-northeast-2.elasticbeanstalk.com
+> <br>
 
 ### 테스트 계정
 
-- **Test ID**: admin@gmail.com
+- **Test ID**: admin
 - **Test PW**: 123
 
 ## 프로젝트 소개
@@ -35,6 +35,28 @@ What’s in your fridge 는 사용자가 다양한 레시피를 확인하고, �
 |:------:|:---:|:---:|:-----:|
 |[@leejeongwoo1](https://github.com/leejeongwoo1/leejeongwoo1)|[@SungJung0616](https://github.com/SungJung0616)|[@zzgh06](https://github.com/zzgh06)|[@ohloara](https://github.com/ohloara)|
 <br>
+
+## 담당한 역할 및 주요 기능
+1. 상품 목록 무한 스크롤을 통한 전체 상품 정보 제공 구현
+- intersection Observer 및 React Query, useRef 와 같은 React Hook을 통해 위치를 감지하여 새로운 데이터 요청
+
+2. My 냉장고 추천 레시피 제공 구현
+- React Query을 활용한 추천 레시피 제공 기능 구현
+
+3. 장보기 메모 기능 구현
+- React Query 데이터 패칭과 React-Toolkit를 활용한 전역 상태 관리 구현
+
+4. 소셜 로그인 및 레시피 공유 기능 구현
+- Kakao API를 활용하여 소셜 로그인 및 레시피 공유     
+
+5. 비밀 번호 관련 기능 구현
+- React Query Hook을 통한 비밀번호 재인증 및 변경 기능 구현
+- NodeEmailer API 활용하여 비밀번호 찾기 기능 구현
+
+6. 관리자 페이지 UI 및 기능 구현
+- chart.js 라이브러리를 기반으로 차트 구현
+- 총 매출 및 신규 가입 고객, 주문상태를 시각화하여 제공
+
 
 ## 시작 가이드
 
@@ -67,7 +89,8 @@ What’s in your fridge 는 사용자가 다양한 레시피를 확인하고, �
 <img src="https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white">
 
 ### Development
-<img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white"> <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white"> <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white"> <img src="https://img.shields.io/badge/mongoDB-47A248?style=for-the-badge&logo=MongoDB&logoColor=white"> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> 
+<img src="https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=Typescript&logoColor=white"/> <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white">  <img src="https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white"> <img src="https://img.shields.io/badge/mongoDB-47A248?style=for-the-badge&logo=MongoDB&logoColor=white"> <img src="https://img.shields.io/badge/Tailwind CSS-06B6D4?style=for-the-badge&logo=Tailwind CSS&logoColor=white"/> 
+
 ### deployment
 <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white"> <img src="https://img.shields.io/badge/netlify-%23000000.svg?style=for-the-badge&logo=netlify&logoColor=#00C7B7">
 <br>
@@ -75,16 +98,21 @@ What’s in your fridge 는 사용자가 다양한 레시피를 확인하고, �
 
 ## 채택한 개발 기술과 브랜치 전략
 
+**TypeScript**
+
+- 타입 검사를 통한 코드 안정성 및 신뢰성 향상시켜 오류 최소화
+- 타입을 명확히 지정함으로써, 유지 보수와 코드 품질을 향상
+
 **React**
 
-- 컴포넌트화를 통해 추후 유지보수와 재사용성을 고려했습니다.
-- 유저 배너, 상단과 하단 배너 등 중복되어 사용되는 부분이 많아 컴포넌트화를 통해 리소스 절약이 가능했습니다.
+- 컴포넌트화를 통해 추후 유지보수와 재사용성을 고려.
+- 유저 배너, 상단과 하단 배너 등 중복되어 사용되는 부분이 많아 컴포넌트화를 통해 리소스 절약.
 
-**Redux Toolkit**
+**Redux Toolkit 과 React Query**
 
-- Redux Toolkit을 사용하여 상태 관리를 더욱 간편하게 구현했습니다.
-- Redux Toolkit은 기존 Redux보다 설정이 간단하고, 보일러플레이트 코드가 적어 학습 비용을 줄일 수 있었습니다.
-- createSlice와 createAsyncThunk 등을 사용하여 상태와 비동기 로직을 효율적으로 관리했습니다.
+- Redux Toolkit을 사용하여 전역 상태 관리를 더욱 간편하게 구현
+- React Query를 통해 API를 통해 데이터를 가져오고, 그 데이터를 관리, 캐싱, 리패칭
+- Redux Toolkit는 전역 상태나 로컬 상태를 관리하는데 최적화 되어 있지만 서버 상태를 관리하는데 복잡하기 때문에 서버 상태관리하는데 최적화된 React Query를 통해 서버 상태를 분리 및 관리하여 코드 간결성 및 유지보수 향상
 
 ## 브랜치 전략
 
@@ -106,17 +134,10 @@ What’s in your fridge 는 사용자가 다양한 레시피를 확인하고, �
 
 ![ERD](./public/image/erd.png)
 
-### API
+### API 문서
 
-- ![API Auth](./public/image/api_auth.png)
-- ![API User](./public/image/api_user.png)
-- ![API Fridge](./public/image/api_frige.png)
-- ![API Ingredient](./public/image/api_ingredient.png)
-- ![API Recipe](./public/image/api_recipe.png)
-- ![API Cart](./public/image/api_cart.png)
-- ![API Review Recipe](./public/image/api_review_recipe.png)
-- ![API Review Ingredient](./public/image/api_reivew_ingredient.png)
-- ![API Order](./public/image/api_order.png)
+- [Swagger API Documentation (Local)](http://localhost:5000/api-docs)
+- [Swagger API Documentation (Production)](http://whats-in-your-fridge.ap-northeast-2.elasticbeanstalk.com/api-docs)
 
 ## 프론트앤드
 
@@ -143,33 +164,25 @@ What’s in your fridge 는 사용자가 다양한 레시피를 확인하고, �
   ### 1. 레시피 관리
   - 다양한 레시피 검색 및 작성
   - 레시피 상세 정보 보기
+  - 레시피 좋아요 및 공유하기 
   ### 2. 식재료 관리
   - 필요한 식재료 장바구니 추가
   - 식재료 구매
+  ### 3. 장보기 메모
+  - 레시피 내 사용되는 재료 중 장보기 메모에 추가
+  - 장보기 목록 중 완료 목록 이동
+  - 장보기 목록 중 삭제가 필요한 목록 삭제 
   ### 3. 냉장고 관리
   - 냉장고 식재료 관리
   - 냉장고 내 식재료 레시피 추천
   ### 4. 리뷰 및 사용자 관리
   - 레시피, 식재료 리뷰 작성
-  ### 5. 챗봇
-  - 문의 기능
 <br>
 
 ## 사용 방법
-1. 홈페이지에서 원하는 레시피를 검색합니다.
-2. 레시피를 클릭하여 상세 정보를 확인합니다.
-3. 필요한 식재료를 장바구니에 추가합니다.
-4. My 냉장고에서 가지고 있는 등록한 후 추천 레시피를 확인합니다.
-5. 장바구니 페이지로 이동하여 식재료를 구매합니다.
-6. 마이 페이지에서 주문현황을 확인할 수 있습니다.
+1. 홈페이지에서 원하는 레시피 상세 페이지에 들어갑니다.
+2. 필요한 식재료 장보기 메모에 추가 혹은 바로 구매가 필요한 식재료를 장바구니에 추가합니다.
+3. 장바구니 페이지로 이동하여 식재료를 구매합니다.
+3. My 냉장고 페이지 내 현재 자신이 가지고 있는 재료(상품)을 등록한 후 추천 레시피를 확인합니다.
+5. 마이 페이지 내에서 주문 정보 및 장보기 메모, 자신이 등록한 레시피 등 개인 정보를 확인, 관리합니다.
 <br>
-
-## 프로젝트 후기
-
-### 이정우
-
-### 최충현
-
-### 정성욱
-
-### 오혜림

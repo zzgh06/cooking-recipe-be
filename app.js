@@ -3,9 +3,13 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
 const indexRouter = require("./routes/index");
+const { swaggerUi, specs } = require("./swagger/swagger")
+
 require("dotenv").config();
 
 const app = express();
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs))
 
 app.use(morgan('combined'));
 app.use(cors());

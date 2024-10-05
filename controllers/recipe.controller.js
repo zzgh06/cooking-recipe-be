@@ -172,31 +172,31 @@ recipeController.getRecipeById = async (req, res) => {
   }
 };
 
-recipeController.getFrigeRecipes = async (req, res) => {
-  try {
-    const { name } = req.query;
-    let response = { status: "success" };
+// recipeController.getFrigeRecipes = async (req, res) => {
+//   try {
+//     const { name } = req.query;
+//     let response = { status: "success" };
 
-    if (name) {
-      const regex = new RegExp(name, "i");
+//     if (name) {
+//       const regex = new RegExp(name, "i");
 
-      const recipes = await Recipe.find({
-        isDeleted: false,
-        $or: [
-          { name: { $regex: regex } },
-          { "ingredients.name": { $regex: regex } },
-        ],
-      });
+//       const recipes = await Recipe.find({
+//         isDeleted: false,
+//         $or: [
+//           { name: { $regex: regex } },
+//           { "ingredients.name": { $regex: regex } },
+//         ],
+//       });
 
-      response.recipeList = recipes;
-    } else {
-      response.recipeList = [];
-    }
-    res.status(200).json(response);
-  } catch (error) {
-    res.status(400).json({ status: "fail", error: error.message });
-  }
-};
+//       response.recipeList = recipes;
+//     } else {
+//       response.recipeList = [];
+//     }
+//     res.status(200).json(response);
+//   } catch (error) {
+//     res.status(400).json({ status: "fail", error: error.message });
+//   }
+// };
 
 recipeController.updateReviewCnt = async (recipeId, num) => {
   const recipe = await Recipe.findById(recipeId);
