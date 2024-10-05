@@ -67,11 +67,13 @@
 6. 관리자 페이지 UI 및 기능 구현
 - chart.js 라이브러리를 기반으로 차트 구현
 - 총 매출 및 신규 가입 고객, 주문상태를 시각화하여 제공
+<br>
 
-### API 문서
+## API 문서
 
 - [Swagger API Documentation (Local)](http://localhost:5000/api-docs)
 - [Swagger API Documentation (Production)](http://whats-in-your-fridge.ap-northeast-2.elasticbeanstalk.com/api-docs)
+<br>
 
 ## 프로젝트 구조
 
@@ -84,11 +86,6 @@
 ### 백앤드 ERD
 
 ![ERD](./public/image/erd.png)
-
-### API 문서
-
-- [Swagger API Documentation (Local)](http://localhost:5000/api-docs)
-- [Swagger API Documentation (Production)](http://whats-in-your-fridge.ap-northeast-2.elasticbeanstalk.com/api-docs)
 
 ## 프론트앤드
 
